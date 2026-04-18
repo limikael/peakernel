@@ -3,6 +3,7 @@
 #include "serial-console.h"
 #include <cassert>
 
+// FIX! close the files...
 static std::vector<std::shared_ptr<FileHandle>> openConsoles;
 
 void serial_console_setup() {
