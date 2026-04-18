@@ -5,11 +5,12 @@
 class Timer {
 public:
 	static void loop();
+	int getId() { return id; };
 	//static void clearTimers();
-	//static void clearTimer(int id);
 	Dispatcher<> timer;
 
-private:	
+
+private:
 	int id;
 	unsigned long deadline;
 	unsigned long interval;
@@ -20,3 +21,5 @@ private:
 
 std::shared_ptr<Timer> createTimeout(int millis);
 std::shared_ptr<Timer> createInterval(int millis);
+void clearTimer(int tid);
+void clearTimers();

@@ -2,6 +2,9 @@
 	"include": ["runtime.h","Timer.h","Fs.h","Arduino.h"],
 	"classes": {
 		"Timer": {
+			"methods": {
+				"getId": {"return": "int"}
+			},
 			"events": {
 				"timer": {}
 			}
@@ -25,6 +28,7 @@
 	"functions": {
 		"createTimeout": {"args": ["int"], "return": "Timer"},
 		"createInterval": {"args": ["int"], "return": "Timer"},
+		"clearTimer": {"args": ["int"]},
 		"digitalToggle": {"args": ["int"]},
 		"msleep": {"args": ["int"]},
 		"getFsInstance": {"return": "Fs"}

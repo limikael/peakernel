@@ -23,12 +23,9 @@ void runtime_start() {
 }
 
 void runtime_loop() {
-	/*if (softTimer.tick()) {
-		Serial.printf("ticking here...\n");
-	}*/
 	Timer::loop();
 }
 
 void runtime_stop() {
-	//Timer::clearTimers();
+	clearTimers();
 }

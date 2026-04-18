@@ -24,20 +24,20 @@ std::shared_ptr<Timer> createInterval(int millis_) {
 	return t;
 }
 
-/*void Timer::clearTimers() {
-	timers.clear();
-	nextTimerId=1;
-}
-
-void Timer::clearTimer(int tid) {
+void clearTimer(int tid) {
     auto it=std::find_if(timers.begin(), timers.end(),
-        [&](const Timer& t) { return t.id == tid; });
+        [&](const std::shared_ptr<Timer>& t) { return t->getId() == tid; });
 
     if (it==timers.end())
         return;
 
     timers.erase(it);
-}*/
+}
+
+void clearTimers() {
+	timers.clear();
+	nextTimerId=1;
+}
 
 void Timer::loop() {
 	unsigned long now=millis();
