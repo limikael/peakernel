@@ -1,0 +1,8 @@
+{
+	"name": "peac-serial-console",
+	"keywords": ["peac-plugin"],
+	"type": "module",
+	"exports": {
+		"./peac-build-hooks": "./build.js"
+	}
+}

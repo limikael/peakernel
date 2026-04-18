@@ -94,25 +94,25 @@ class PeacFlasher {
     generatePeacMain(ev) {
         return autoIndent(`
             extern "C" {
-                ${ev.setupFunctions.map(f=>`void ${f}();`)}
-                ${ev.loopFunctions.map(f=>`void ${f}();`)}
-                ${ev.startFunctions.map(f=>`void ${f}();`)}
-                ${ev.stopFunctions.map(f=>`void ${f}();`)}
+                ${ev.setupFunctions.map(f=>`void ${f}();`).join("\n")}
+                ${ev.loopFunctions.map(f=>`void ${f}();`).join("\n")}
+                ${ev.startFunctions.map(f=>`void ${f}();`).join("\n")}
+                ${ev.stopFunctions.map(f=>`void ${f}();`).join("\n")}
 
                 void peac_notify_setup() {
-                    ${ev.setupFunctions.map(f=>`${f}();`)}
+                    ${ev.setupFunctions.map(f=>`${f}();`).join("\n")}
                 }
 
                 void peac_notify_loop() {
-                    ${ev.loopFunctions.map(f=>`${f}();`)}
+                    ${ev.loopFunctions.map(f=>`${f}();`).join("\n")}
                 }
 
                 void peac_notify_start() {
-                    ${ev.startFunctions.map(f=>`${f}();`)}
+                    ${ev.startFunctions.map(f=>`${f}();`).join("\n")}
                 }
 
                 void peac_notify_stop() {
-                    ${ev.stopFunctions.map(f=>`${f}();`)}
+                    ${ev.stopFunctions.map(f=>`${f}();`).join("\n")}
                 }
             }
         `);
