@@ -22,10 +22,10 @@ program
     .description("Open monitor.")
     .action(withMergedOptions(peacMonitor));
 
-/*program
+program
     .command('info')
     .description("Show runtime info.")
-    .action(withMergedOptions(peacInfo));*/
+    .action(withMergedOptions(peacInfo));
 
 try {
     await program.parseAsync(process.argv);

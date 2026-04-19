@@ -18,12 +18,14 @@
   "license": "ISC",
   "packageManager": "pnpm@10.28.2",
   "dependencies": {
+    "@serialport/parser-readline": "^13.0.0",
     "commander": "^14.0.3",
     "dotenv": "^17.4.2",
     "hook-channel": "^1.0.0",
     "json5": "^2.2.3",
     "package-up": "^5.0.0",
-    "peabind": "link:../peabind"
+    "peabind": "link:../peabind",
+    "serialport": "^13.0.0"
   },
   "devDependencies": {
     "jasmine": "^6.2.0"

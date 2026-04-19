@@ -43,6 +43,8 @@ export function proxyComposeFb(...args) {
 
 	return new Proxy({}, {
 		get(_, prop, receiver) {
+			//console.log("get: "+prop);
+
 			// handle symbols properly
 			if (typeof prop === "symbol") {
 				for (const layer of layers) {
@@ -65,7 +67,12 @@ export function proxyComposeFb(...args) {
 				}
 			}
 
+			if (prop === "then") {
+				return undefined;
+			}
+
 			// fallback → turn into callable method
+			//console.log("fallback, prop="+prop);
 			return (...args) => fallback(prop, args, receiver);
 		}
 	});

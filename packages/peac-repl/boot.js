@@ -31,6 +31,7 @@ class Repl {
             if (char=="\n") {
                 let messageId;
                 try {
+                    //console.log("line: "+this.line);
                     let message=JSON.parse(this.line);
                     messageId=message.id;
                     let res=this.model[message.method](...message.params);
@@ -44,7 +45,8 @@ class Repl {
                     this.writeString("\u001b"+JSON.stringify({
                         id: messageId,
                         error: {
-                            message: String(e)
+                            message: String(e),
+                            also: "test"
                         }
                     })+"\n");
                 }

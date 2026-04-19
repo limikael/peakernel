@@ -20,7 +20,7 @@ describe("proxy-compose",()=>{
 		expect(w.world()).toEqual(456);
 	});
 
-	it("can compose proxies with fallback",()=>{
+	it("can compose proxies with fallback",async ()=>{
 		class A {
 			hello() {
 				return 123;
@@ -34,15 +34,18 @@ describe("proxy-compose",()=>{
 		}
 
 		let fbcalled;
-		let w=proxyComposeFb(new A(),new B(),(func,args)=>{
+		let w=proxyComposeFb(new A(),new B(),async (func,args)=>{
 			expect(func).toEqual("bla");
 			expect(args).toEqual([1,2,3]);
 			fbcalled=true;
+
+			return "hello";
 		});
 
 		expect(w.hello()).toEqual(123);
 		expect(w.world()).toEqual(456);
-		w.bla(1,2,3);
+		let v=await w.bla(1,2,3);
+		expect(v).toEqual("hello");
 		expect(fbcalled).toBeTrue();
 	});
 });
