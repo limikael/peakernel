@@ -60,6 +60,7 @@ class PeacFlasher {
 
         let ev=await hookChannel.dispatch(new PeacBuildEvent());
 
+        ev.addBinding(path.join(__dirname,"../firmware/bindings.json"));
         ev.addIncludeDir(peabindGetLibConf("includeDir"));
         ev.addIncludeDir(path.join(__dirname,"../../vendor/quickjs"));
         ev.addIncludeDir(this.targetPath);

@@ -1,0 +1,23 @@
+{
+	"include": ["Fs.h","Arduino.h"],
+	"classes": {
+		"Fs": {
+			"methods": {
+				"open": {"return": "FileHandle","args":["string","string"]}
+			}
+		},
+		"FileHandle": {
+			"methods": {
+				"close": {},
+				"write": {"args": ["buffer"]}
+			},
+			"events": {
+				"data": {"args": ["buffer"]},
+				"closeEvent": {}
+			}
+		}
+	},
+	"functions": {
+		"getFsInstance": {"return": "Fs"}
+	}
+}

@@ -1,5 +1,5 @@
 {
-	"include": ["runtime.h","Timer.h","Fs.h","Arduino.h"],
+	"include": ["runtime.h","Timer.h"],
 	"classes": {
 		"Timer": {
 			"methods": {
@@ -9,21 +9,6 @@
 				"timer": {}
 			}
 		},
-		"Fs": {
-			"methods": {
-				"open": {"return": "FileHandle","args":["string","string"]}
-			}
-		},
-		"FileHandle": {
-			"methods": {
-				"close": {},
-				"write": {"args": ["buffer"]}
-			},
-			"events": {
-				"data": {"args": ["buffer"]},
-				"closeEvent": {}
-			}
-		}
 	},
 	"functions": {
 		"createTimeout": {"args": ["int"], "return": "Timer"},
@@ -31,7 +16,6 @@
 		"clearTimer": {"args": ["int"]},
 		"digitalToggle": {"args": ["int"]},
 		"msleep": {"args": ["int"]},
-		"getFsInstance": {"return": "Fs"}
 	}
 }
 
