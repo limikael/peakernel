@@ -1,9 +1,9 @@
 todo:
-- RPC
 - FS
 - deploy
 - gpio
-- info
+x RPC
+x info
 x timers 
 x VFS
 x console

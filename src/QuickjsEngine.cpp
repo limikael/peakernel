@@ -3,6 +3,7 @@
 #include "jsval-util.h"
 #include "Fs.h"
 #include "InfoRecord.h"
+#include "esp_heap_caps.h"
 
 extern "C" void peac_notify_start();
 extern "C" void peac_notify_stop();
@@ -13,8 +14,16 @@ QuickjsEngine::QuickjsEngine(const char *boot_)
 }
 
 void QuickjsEngine::setup() {
-	getInfoCollector()->collect.on([](std::shared_ptr<InfoRecord> info) {
-		info->setInt("numOpenFiles",Fs::getInstance()->getNumOpenFiles());
+	getInfoCollector()->collect.on([](std::shared_ptr<InfoRecord> record) {
+		multi_heap_info_t info;
+		heap_caps_get_info(&info, MALLOC_CAP_DEFAULT);
+		record->setInt("totalHeap",info.total_free_bytes+info.total_allocated_bytes);
+		record->setInt("totalUsed",info.total_allocated_bytes);
+		record->setInt("totalFree",info.total_free_bytes);
+		record->setInt("minimumFreeBytes",info.minimum_free_bytes);
+		record->setInt("largestBlock",info.largest_free_block);
+		record->setInt("freeBlocks",info.free_blocks);
+		record->setInt("openFiles",Fs::getInstance()->getNumOpenFiles());
 	});
 }
 
