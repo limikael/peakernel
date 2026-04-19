@@ -14,6 +14,7 @@ extern "C" void scheduleRestart() {
 void setup() {
 	Serial.begin(115200);
 	peac_notify_setup();
+	engine.setup();
 	engine.begin();
 }
 

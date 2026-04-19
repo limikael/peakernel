@@ -7,7 +7,7 @@
     "ext": "./js/tools/ext.js",
     "test": "pnpm test:js && pnpm test:c",
     "test:js": "jasmine",
-    "test:c": "g++ -obin/testmain test/*.cpp -Isrc -I/home/micke/Repo/peabind/include && ./bin/testmain"
+    "test:c": "g++ -std=c++20 -obin/testmain test/*.cpp src/InfoRecord.cpp -Isrc -I/home/micke/Repo/peabind/include && ./bin/testmain"
   },
   "bin": {
     "peac": "./js/tools/peac-cli.js"

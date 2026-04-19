@@ -8,6 +8,7 @@ void scheduleRestart();
 class QuickjsEngine {
 public:
 	QuickjsEngine(const char *boot_);
+	void setup();
 	void begin();
 	void close();
 	void loop();

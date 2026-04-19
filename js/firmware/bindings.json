@@ -1,5 +1,5 @@
 {
-	"include": ["Fs.h","Arduino.h","QuickjsEngine.h"],
+	"include": ["Fs.h","Arduino.h","QuickjsEngine.h","InfoRecord.h"],
 	"classes": {
 		"Fs": {
 			"methods": {
@@ -15,10 +15,25 @@
 				"data": {"args": ["buffer"]},
 				"closeEvent": {}
 			}
+		},
+		"StringArray": {
+			"methods": {
+				"size": {"return": "int"},
+				"at": {"return": "string", "args": ["int"]}
+			}
+		},
+		"InfoRecord": {
+			"methods": {
+				"getString": {"args": ["string"], "return": "string"},
+				"getInt": {"args": ["string"], "return": "int"},
+				"getType": {"args": ["string"], "return": "string"},
+				"getKeys": {"return": "StringArray"}
+			}
 		}
 	},
 	"functions": {
 		"getFsInstance": {"return": "Fs"},
-		"scheduleRestart": {}
+		"scheduleRestart": {},
+		"collectInfo": {"return": "InfoRecord"}
 	}
 }

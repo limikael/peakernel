@@ -2,6 +2,7 @@
 #include "peac_bindings.h"
 #include "jsval-util.h"
 #include "Fs.h"
+#include "InfoRecord.h"
 
 extern "C" void peac_notify_start();
 extern "C" void peac_notify_stop();
@@ -9,6 +10,12 @@ extern "C" void peac_notify_stop();
 QuickjsEngine::QuickjsEngine(const char *boot_)
 		:warningTimer(1000) {
 	boot=boot_;
+}
+
+void QuickjsEngine::setup() {
+	getInfoCollector()->collect.on([](std::shared_ptr<InfoRecord> info) {
+		info->setInt("numOpenFiles",Fs::getInstance()->getNumOpenFiles());
+	});
 }
 
 void QuickjsEngine::begin() {
