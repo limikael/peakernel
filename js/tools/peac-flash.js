@@ -88,6 +88,7 @@ class PeacFlasher {
         ev.addIncludeDir(peabindGetLibConf("includeDir"));
         ev.addIncludeDir(path.join(__dirname,"../../vendor/quickjs"));
         ev.addIncludeDir(this.targetPath);
+        ev.addIncludeDir(path.join(__dirname,"../../src"));
         ev.addSource(path.join(__dirname,"../../vendor/quickjs"));
         ev.addSource(path.join(__dirname,"../../src"));
         ev.addSource(this.targetPath);

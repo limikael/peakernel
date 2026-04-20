@@ -1,10 +1,10 @@
 todo:
+- digitalWrite proper function name
+- gpio
 - FS
 - deploy
-- gpio
-- init command
-- digitalWrite proper function name
-- fix wasm tests
+x init command
+x fix wasm tests
 x RPC
 x info
 x timers 

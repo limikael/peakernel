@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import {Command, Option, program} from "commander";
 import {withMergedOptions} from "../utils/commander-util.js";
-import {peacFlash, peacMonitor, peacInfo} from "./peac-commands.js";
+import {peacFlash, peacMonitor, peacInfo, peacInit} from "./peac-commands.js";
 import {loadProjectEnv} from "../utils/env-util.js";
 
 loadProjectEnv();
@@ -26,6 +26,11 @@ program
     .command('info')
     .description("Show runtime info.")
     .action(withMergedOptions(peacInfo));
+
+program
+    .command("init")
+    .description("Create peac project in current dir.")
+    .action(withMergedOptions(peacInit));
 
 try {
     await program.parseAsync(process.argv);
