@@ -10,21 +10,9 @@
 #include <Arduino.h>
 #endif
 
-static std::vector<uint8_t> stringToVec(std::string s) {
-	std::vector<unsigned char> v(s.begin(), s.end());
-	return v;
-}
-
 class FileHandle {
 public:
-	~FileHandle() {
-		//Serial.printf("FileHandle destructor...\n");
-	}
-
-	void write(std::string s) {
-		std::vector<unsigned char> v(s.begin(), s.end());
-		write(v);
-	}
+	~FileHandle() { /*Serial.printf("FileHandle destructor...\n");*/ }
 
 	void write(std::vector<uint8_t> data) {
 		assert(!isClosed());
@@ -32,10 +20,6 @@ public:
 		assert(otherShared!=nullptr);
 		assert(!otherShared->isClosed());
 		otherShared->handleIncoming(data);
-	}
-
-	void handleIncoming(std::vector<uint8_t> data) {
-		readBuffer.insert(readBuffer.end(), data.begin(), data.end());
 	}
 
 	void tick() {
@@ -63,6 +47,10 @@ public:
 	Dispatcher<> closeEvent;
 
 private:
+	void handleIncoming(std::vector<uint8_t> data) {
+		readBuffer.insert(readBuffer.end(), data.begin(), data.end());
+	}
+
 	bool closed=false;
 	std::weak_ptr<FileHandle> other;
 	std::vector<uint8_t> readBuffer;
@@ -188,8 +176,10 @@ public:
 	}
 
 	static std::shared_ptr<Fs> getInstance();
+	static std::shared_ptr<Fs> createForTesting();
 
 private:
+	Fs() {}
 	std::vector<std::shared_ptr<FileHandlePair>> pairs;
 };
 

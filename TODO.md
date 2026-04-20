@@ -11,3 +11,6 @@ x timers
 x VFS
 x console
 x repl
+
+backlog:
+- throw exceptions

@@ -1,12 +1,16 @@
 #include "Fs.h"
 
-static std::shared_ptr<Fs> fsInstance;
-
 std::shared_ptr<Fs> Fs::getInstance() {
-	if (fsInstance==nullptr)
-		fsInstance=std::make_shared<Fs>();
+	static std::shared_ptr<Fs> instance=nullptr;
 
-	return fsInstance;
+	if (instance==nullptr)
+		instance=std::shared_ptr<Fs>(new Fs());
+
+	return instance;
+}
+
+std::shared_ptr<Fs> Fs::createForTesting() {
+	return std::shared_ptr<Fs>(new Fs());
 }
 
 std::shared_ptr<Fs> getFsInstance() {

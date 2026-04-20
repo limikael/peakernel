@@ -2,6 +2,7 @@
 	"include": ["Fs.h","Arduino.h","QuickjsEngine.h","InfoRecord.h"],
 	"classes": {
 		"Fs": {
+			"constructible": false,
 			"methods": {
 				"open": {"return": "FileHandle","args":["string","string"]}
 			}
