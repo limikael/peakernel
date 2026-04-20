@@ -1,5 +1,13 @@
 #include "peac-gpio.h"
-#include <Arduino.h>
+
+static std::map<int,std::shared_ptr<Pin>> pins;
+
+std::shared_ptr<Pin> pin(int pinNum) {
+	if (pins.find(pinNum)==pins.end())
+		pins[pinNum]=std::make_shared<Pin>(pinNum);
+
+	return pins[pinNum];
+}
 
 int peac_gpio::digitalRead(int pin) {
 	return ::digitalRead(pin);
@@ -21,5 +29,11 @@ void peac_gpio::pinMode(int pin, std::string mode) {
 
 	else {
 		Serial.printf("warning! unrecognized pin mode");
+	}
+}
+
+void gpio_loop() {
+	for (const auto& [key, pin]: pins) {
+		pin->check();
 	}
 }
