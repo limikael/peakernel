@@ -14,7 +14,7 @@ void FileHandle::write(std::vector<uint8_t> data) {
 
 std::vector<uint8_t> FileHandle::read() {
 	assert(buffered);
-	if (!readBuffer.size()) {
+	if (!readBuffer.size() && !isClosed()) {
 		auto otherShared=other.lock();
 		otherShared->drainEvent.emit();
 	}

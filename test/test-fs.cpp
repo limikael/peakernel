@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <Fs.h>
 #include <cassert>
+#include <deque>
 
 std::string vecToString(std::vector<uint8_t> vec) {
 	std::string s(vec.begin(),vec.end());
@@ -123,17 +124,39 @@ void test_buffered_delayed_write() {
 	printf("- fs can do buffered read with delay\n");
 	auto fs=Fs::createForTesting();
 
-	fs->openRequest.on([](std::shared_ptr<OpenEvent> ev){
+	std::deque<std::string> send={"hello1","hello2","hello3"};
+
+	fs->openRequest.on([&send](std::shared_ptr<OpenEvent> ev){
 		if (ev->getPathname()=="/f1") {
 			auto f=ev->accept();
-			f->drainEvent.on([f]() {
-				f->write(stringToVec("hello1"));
+			f->drainEvent.on([f,&send]() {
+				f->write(stringToVec(send.front()));
+				send.pop_front();
+				if (send.size()==0)
+					f->close();
 			});
 		}
 	});
 
 	auto f1=fs->open("/f1","r");
 	f1->setBuffered(true);
-	auto s=vecToString(f1->read());
-	assert(s=="hello1");
+
+	std::vector<std::string> rec;
+	while (!f1->isClosed()) {
+		fs->tick();
+		fs->tick();
+		fs->tick();
+		fs->tick();
+		rec.push_back(vecToString(f1->read()));
+		fs->tick();
+		fs->tick();
+		fs->tick();
+		fs->tick();
+	}
+
+	assert(rec.size()==3);
+
+	/*for (int i=0; i<rec.size(); i++) {
+		printf("s: %s\n",rec[i].c_str());
+	}*/
 }
