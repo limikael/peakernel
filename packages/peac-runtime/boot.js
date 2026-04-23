@@ -27,3 +27,6 @@ console.log=s=>{
     if (devConsole)
     	devConsole.write(bytes);
 }
+
+/*console={};
+console.log=s=>{};*/

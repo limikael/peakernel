@@ -1,6 +1,7 @@
 #include "Fs.h"
 
 FileHandle::FileHandle() {
+	/*Serial.printf("FileHandle constructor...\n");*/
 	drainOnTick=true;
 }
 
@@ -112,6 +113,7 @@ int FileHandle::getIncomingCapacity() {
 }
 
 FileHandlePair::FileHandlePair() {
+	/*Serial.printf("FileHandlePair constructor...\n");*/
 	first=std::make_shared<FileHandle>();
 	second=std::make_shared<FileHandle>();
 	first->setOther(second);

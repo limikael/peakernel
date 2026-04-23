@@ -64,6 +64,10 @@ void QuickjsEngine::begin() {
 		jsvalFree(bootFn);
 		jsvalFree(bootRes);
 	}
+
+	multi_heap_info_t info;
+	heap_caps_get_info(&info, MALLOC_CAP_DEFAULT);
+	//Serial.printf("total used: %d\n",info.total_allocated_bytes);
 }
 
 void QuickjsEngine::close() {
@@ -96,6 +100,7 @@ void QuickjsEngine::loop() {
 	}
 
 	if (warningTimer.tick()) {
+		//scheduleRestart(false);
 		//Serial.printf("pin 4: %d\n",digitalRead(4));
 		/*if (!digitalRead(4))
 			scheduleRestart();*/

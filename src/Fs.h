@@ -40,6 +40,7 @@ private:
 class FileHandlePair {
 public:
 	FileHandlePair();
+	~FileHandlePair() { /*Serial.printf("FileHandlePair destructor...\n");*/ }
 	std::shared_ptr<FileHandle> getFirst() { return first; }
 	std::shared_ptr<FileHandle> getSecond() { return second; }
 	void tick();

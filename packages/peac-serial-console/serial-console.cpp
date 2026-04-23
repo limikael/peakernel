@@ -78,6 +78,6 @@ void serial_console_start() {
 }
 
 void serial_console_stop() {
-	//Serial.printf("actually closing...\n");
 	openConsoles.clear();
+	//Serial.printf("closing consoles, cap=%d\n",openConsoles.capacity());
 }
