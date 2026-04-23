@@ -48,7 +48,7 @@ void test_sys() {
     jsvalQuickjsInit();
 	peac_bindings_init_jsval();
 
-	Fs::getInstance()->openRequest.on([](std::shared_ptr<OpenEvent> ev){
+	Fs::getInstance()->openEvent.on([](std::shared_ptr<OpenEvent> ev){
 		if (ev->getPathname()!="/testfile")
 			return;
 
@@ -56,7 +56,7 @@ void test_sys() {
 		f->write(stringToVec("hello world"));
 	});
 
-	Fs::getInstance()->openRequest.on([](std::shared_ptr<OpenEvent> ev){
+	Fs::getInstance()->openEvent.on([](std::shared_ptr<OpenEvent> ev){
 		if (ev->getPathname()!="/hello")
 			return;
 

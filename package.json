@@ -7,7 +7,8 @@
     "ext": "./js/tools/ext.js",
     "test": "pnpm test:js && pnpm test:c",
     "test:js": "jasmine",
-    "test:c": "make test"
+    "test:c": "make test",
+    "test:sys": "jasmine --config=spec/support/jasmine-sys.mjs"
   },
   "bin": {
     "peac": "./js/tools/peac-cli.js"

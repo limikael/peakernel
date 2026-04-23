@@ -1,5 +1,5 @@
 {
-	"include": ["Fs.h","InfoRecord.h"],
+	"include": ["Fs.h","InfoRecord.h","encoding.h"],
 	"classes": {
 		"Fs": {
 			"constructible": false,
@@ -13,6 +13,7 @@
 				"close": {},
 				"write": {"args": ["buffer"]},
 				"setDataEventSize": {"args": ["int"]},
+				"getDataWriteAdviceSize": {"return": "int"},
 				"isClosed": {"return": "int"},
 				"isClosing": {"return": "int"}
 			},
@@ -39,6 +40,10 @@
 	},
 	"functions": {
 		"getFsInstance": {"return": "Fs"},
-		"collectInfo": {"return": "InfoRecord"}
+		"collectInfo": {"return": "InfoRecord"},
+		"encodeBase64": {"args": ["buffer"], "return": "string"},
+		"decodeBase64": {"args": ["string"], "return": "buffer"},
+		"encodeAscii": {"args": ["string"], "return": "buffer"},
+		"decodeAscii": {"args": ["buffer"], "return": "string"},
 	}
 }

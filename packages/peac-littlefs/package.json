@@ -1,0 +1,8 @@
+{
+  "name": "peac-littlefs",
+  "keywords": ["peac-plugin"],
+  "type": "module",
+  "exports": {
+    "./peac-build-hooks": "./build.js"
+  }
+}

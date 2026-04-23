@@ -19,8 +19,9 @@ void FileHandle::tick() {
 	if (isClosed())
 		return;
 
-	if (isClosing() && !readBuffer.size()) {
+	if (isClosing() && !readBuffer.size() && !isClosed()) {
 		this->close();
+		//Serial.printf("emitting close..\n");
 		this->closeEvent.emit();
 	}
 
@@ -140,7 +141,7 @@ std::shared_ptr<FileHandlePair> Fs::createFileHandlePair() {
 std::shared_ptr<FileHandle> Fs::open(std::string pathname, std::string mode) {
 	auto fp=createFileHandlePair();
 	auto ev=std::make_shared<OpenEvent>(fp, pathname, mode);
-	openRequest.emit(ev);
+	openEvent.emit(ev);
 
 	if (ev->isAccepted()) {
 		return fp->getFirst();

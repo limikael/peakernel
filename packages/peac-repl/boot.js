@@ -28,6 +28,9 @@ class Repl {
                 id: message.id,
                 result: res
             })+"\n");
+            /*setTimeout(()=>{
+                //console.log("w...");
+            },100);*/
         }
 
         catch (e) {

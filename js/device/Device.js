@@ -11,53 +11,53 @@ export default class Device {
 		await this.connection.close();
 	}
 
-    async readFile(fn) {
+    async readFile(fn, encoding) {
         let fid=await this.connection.fileOpen(fn, "r");
         //console.log("fid: "+fid);
-        let content="";
+        let content=new Uint8Array();
         let s;
 
         do {
-            s=await this.connection.fileReadString(fid,64);
+            s=await this.connection.fileReadBase64(fid,128);
             //console.log("got: "+s);
             if (s!==null)
-	            content+=s;
+	            content=new Uint8Array([...content,...new Uint8Array(Buffer.from(s,"base64"))]);
+
+            console.log("read total: "+content.length);
         } while (s!==undefined && s!==null && s.length);
 
         //console.log("done... closing...");
 
         await this.connection.fileClose(fid);
 
+        if (encoding=="utf8")
+        	content=new TextDecoder().decode(content);
+
         return content;
     }
 
     async writeFile(fn, content) {
-    	if (content instanceof Uint8Array) {
-    		//console.log("write bin...");
+    	if (typeof content=="string")
+    		content=new TextEncoder().encode(content);
 
-			let chunkSize=8192; //16384; // //4096;
-	        let fid=await this.connection.fileOpen(fn, "w");
+    	if (!(content instanceof Uint8Array))
+    		throw new Error("Need Uint8 data...");
 
-	        //console.log("opened: "+fid);
+		let chunkSize=128; //64; //4096; //8192; //16384; // //4096;
+        let fid=await this.connection.fileOpen(fn, "w");
 
-			for (let i=0; i<content.length; i+=chunkSize) {
-				console.log("write: "+i);
+        //console.log("opened: "+fid);
 
-				const chunk=content.subarray(i,i+chunkSize)
-				const b64=Buffer.from(chunk).toString("base64")
-	            await this.connection.fileWriteBase64(fid,b64);
-			}
-	        await this.connection.fileClose(fid);
-    	}
+		for (let i=0; i<content.length; i+=chunkSize) {
+			console.log("write chunk to: "+(i+chunkSize)+" / "+content.length);
 
-    	else {
-	        let chunks=stringChunkify(content,64);
-	        let fid=await this.connection.fileOpen(fn, "w");
-	        for (let chunk of chunks)
-	            await this.connection.fileWriteString(fid,chunk);
+			const chunk=content.subarray(i,i+chunkSize)
+			const b64=Buffer.from(chunk).toString("base64")
+            await this.connection.fileWriteBase64(fid,b64);
+		}
 
-	        await this.connection.fileClose(fid);
-    	}
+		//console.log("closing...");
+        await this.connection.fileClose(fid);
     }
 }
 

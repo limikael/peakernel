@@ -39,7 +39,7 @@ void test_fs_accept() {
 
 	std::string received;
 
-	fs->openRequest.on([&received](std::shared_ptr<OpenEvent> ev){
+	fs->openEvent.on([&received](std::shared_ptr<OpenEvent> ev){
 		auto myh=ev->accept();
 		myh->dataEvent.on([&received](std::vector<uint8_t> data) {
 			received=std::string(data.begin(),data.end());
@@ -59,7 +59,7 @@ void test_fs_accept_read() {
 	printf("- fs accept read\n");
 	auto fs=Fs::createForTesting();
 
-	fs->openRequest.on([](std::shared_ptr<OpenEvent> ev){
+	fs->openEvent.on([](std::shared_ptr<OpenEvent> ev){
 		if (ev->getPathname()=="/f1") {
 			auto f=ev->accept();
 			f->write(stringToVec("hello1"));
@@ -103,7 +103,7 @@ void test_event_size() {
 	printf("- fs can do buffered read\n");
 	auto fs=Fs::createForTesting();
 
-	fs->openRequest.on([](std::shared_ptr<OpenEvent> ev){
+	fs->openEvent.on([](std::shared_ptr<OpenEvent> ev){
 		if (ev->getPathname()=="/f1") {
 			auto f=ev->accept();
 			f->write(stringToVec("hello1"));

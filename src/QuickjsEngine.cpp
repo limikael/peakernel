@@ -9,7 +9,7 @@ extern "C" void peac_notify_start();
 extern "C" void peac_notify_stop();
 
 QuickjsEngine::QuickjsEngine(const char *boot_)
-		:warningTimer(1000) {
+		:warningTimer(1000), gcTimer(100) {
 	boot=boot_;
 }
 
@@ -25,6 +25,7 @@ void QuickjsEngine::setup() {
 		record->setInt("freeBlocks",info.free_blocks);
 		record->setInt("openFiles",Fs::getInstance()->getNumOpenFiles());
 		record->setInt("liveObjects",peac_bindings_get_num_objects());
+		record->setInt("numListeners",peac_bindings_get_num_listeners());
 	});
 }
 
@@ -40,24 +41,43 @@ void QuickjsEngine::begin() {
 	peac_bindings_init(ctx);
 	peac_notify_start();
 	JSVAL res=jsvalEval(boot);
-	if (jsvalHasException())
+	if (jsvalHasException()) {
 		errorMessage=jsvalCatchExceptionStdString();
+		jsvalFree(res);
+		return;
+	}
 
 	jsvalFree(res);
+
+	JSVAL bootFn=jsvalGetProp(jsvalGetGlobal(),"boot");
+	JSVAL bootRes=jsvalCall(bootFn,jsvalUndefined(),0,NULL);
+	if (jsvalHasException()) {
+		errorMessage=jsvalCatchExceptionStdString();
+		jsvalFree(bootRes);
+		return;
+	}
+
+	jsvalFree(bootFn);
+	jsvalFree(bootRes);
 }
 
 void QuickjsEngine::close() {
 	assert(ctx!=NULL);
+	//Serial.printf("closing fs...\n");
 	Fs::getInstance()->close();
+	//Serial.printf("done closing fs...\n");
 	assert(Fs::getInstance()->getNumOpenFiles()==0);
+	//Serial.printf("running stop funcitons...\n");
 	peac_notify_stop();
+	//Serial.printf("exit bindings...\n");
 	peac_bindings_exit();
+	//Serial.printf("bindings exited...\n");
 	JSRuntime *rt=JS_GetRuntime(ctx);
-    //Serial.printf("**** freeing context... ****\n");
+    //Serial.printf("freeing context... ****\n");
     JS_FreeContext(ctx);
     JS_RunGC(rt);
     assert(peac_bindings_get_num_objects()==0);
-    //Serial.printf("**** cleanup complete, releasing runtime... ****\n");
+    //Serial.printf("cleanup complete, releasing runtime... ****\n");
     JS_FreeRuntime(rt);
 	ctx=nullptr;
 }
@@ -65,6 +85,10 @@ void QuickjsEngine::close() {
 void QuickjsEngine::loop() {
 	jsvalQuickjsRunJobs();
 	Fs::getInstance()->tick();
+
+	if (gcTimer.tick()) {
+		jsvalQuickjsRunGc();
+	}
 
 	if (warningTimer.tick()) {
 		//Serial.printf("pin 4: %d\n",digitalRead(4));
@@ -84,4 +108,8 @@ void QuickjsEngine::loop() {
 
 void QuickjsEngine::scheduleRestart() {
 	restartScheduled=true;
+}
+
+void QuickjsEngine::gc() {
+	jsvalQuickjsRunGc();
 }

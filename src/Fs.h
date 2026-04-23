@@ -73,7 +73,7 @@ public:
 	void close();
 	static std::shared_ptr<Fs> getInstance();
 	static std::shared_ptr<Fs> createForTesting();
-	Dispatcher<std::shared_ptr<OpenEvent>> openRequest;
+	Dispatcher<std::shared_ptr<OpenEvent>> openEvent;
 
 private:
 	Fs() {}

@@ -1,10 +1,11 @@
 import {dirnameFromImportMeta, runCommand, packageDirname} from "../utils/node-util.js";
 import path from "path";
+import {peacFlash} from "./peac-flash.js";
 export {peacFlash} from "./peac-flash.js";
 import {createDevice} from "../device/Device.js";
 import {SerialDeviceConnection, createSerialDeviceConnection} from "../device/SerialDeviceConnection.js";
 import {proxyComposeFb} from "../utils/proxy-compose.js";
-import fs from "fs";
+import fs, {promises as fsp} from "fs";
 import {DeclaredError} from "../utils/js-util.js";
 
 let __dirname=dirnameFromImportMeta(import.meta);
@@ -49,7 +50,18 @@ export async function peacInit({cwd}) {
 
 export async function peacCat({cwd, port, args}) {
     let device=await createDevice({port});
-    let content=await device.readFile(args[0]);
+    let content=await device.readFile(args[0],"utf8");
     console.log(content);
+    await device.close();
+}
+
+export async function peacDeploy({cwd, port, args, main, flash}) {
+    if (flash)
+        await peacFlash({cwd,port});
+
+    let device=await createDevice({port});
+    let mainContent=await fsp.readFile(main);
+    await device.writeFile("/boot.js",mainContent);
+    await device.awaitBoot();
     await device.close();
 }

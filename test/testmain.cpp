@@ -6,6 +6,7 @@ void test_fs_accept_read();
 void test_InfoRecord();
 void test_event_size();
 void test_sys();
+void test_encoding();
 
 int main() {
 	printf("Running tests...\n");
@@ -16,6 +17,7 @@ int main() {
 	test_InfoRecord();
 	test_event_size();
 	test_sys();
+	test_encoding();
 
 	return 0;
 }

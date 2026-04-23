@@ -11,6 +11,10 @@ extern "C" void scheduleRestart() {
 	engine.scheduleRestart();
 }
 
+extern "C" void gc() {
+	engine.gc();
+}
+
 void setup() {
 	Serial.begin(115200);
 	peac_notify_setup();
