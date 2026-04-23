@@ -17,6 +17,7 @@ public:
 	void write(std::vector<uint8_t> data);
 	void tick();
 	void close();
+	void forceClose();
 	bool isClosed() { return closed; }
 	bool isClosing();
 	void setOther(std::weak_ptr<FileHandle> other_) { other=other_; }
@@ -43,6 +44,7 @@ public:
 	std::shared_ptr<FileHandle> getSecond() { return second; }
 	void tick();
 	void close();
+	void forceClose();
 	bool isClosed() { return (first->isClosed() && second->isClosed()); }
 
 private:

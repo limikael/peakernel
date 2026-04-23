@@ -18,12 +18,12 @@ export default class Device {
         let s;
 
         do {
-            s=await this.connection.fileReadBase64(fid,128);
+            s=await this.connection.fileReadBase64(fid,1024);
             //console.log("got: "+s);
             if (s!==null)
 	            content=new Uint8Array([...content,...new Uint8Array(Buffer.from(s,"base64"))]);
 
-            console.log("read total: "+content.length);
+            //console.log("read total: "+content.length);
         } while (s!==undefined && s!==null && s.length);
 
         //console.log("done... closing...");
@@ -43,13 +43,13 @@ export default class Device {
     	if (!(content instanceof Uint8Array))
     		throw new Error("Need Uint8 data...");
 
-		let chunkSize=128; //64; //4096; //8192; //16384; // //4096;
+		let chunkSize=1024;
         let fid=await this.connection.fileOpen(fn, "w");
 
         //console.log("opened: "+fid);
 
 		for (let i=0; i<content.length; i+=chunkSize) {
-			console.log("write chunk to: "+(i+chunkSize)+" / "+content.length);
+			//console.log("write chunk to: "+(i+chunkSize)+" / "+content.length);
 
 			const chunk=content.subarray(i,i+chunkSize)
 			const b64=Buffer.from(chunk).toString("base64")

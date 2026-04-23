@@ -17,30 +17,31 @@ class Repl {
         this.serial.write(encodeAscii(s));
     }
 
+    writeMessage(o) {
+        this.writeString("\u001b"+JSON.stringify(o)+"\n");
+    }
+
     async runMessageLine(line) {
         let messageId;
         try {
-            //console.log("line: "+this.line);
             let message=JSON.parse(line);
             messageId=message.id;
-            let res=await this.model[message.method](...message.params);
-            this.writeString("\u001b"+JSON.stringify({
+            let res=this.model[message.method](...message.params);
+            if (res && typeof res=="object" && res.then)
+                res=await res;
+            this.writeMessage({
                 id: message.id,
                 result: res
-            })+"\n");
-            /*setTimeout(()=>{
-                //console.log("w...");
-            },100);*/
+            });
         }
 
         catch (e) {
-            this.writeString("\u001b"+JSON.stringify({
+            this.writeMessage({
                 id: messageId,
                 error: {
                     message: String(e),
-                    also: "test"
                 }
-            })+"\n");
+            });
         }
     }
 

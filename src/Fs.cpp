@@ -66,6 +66,16 @@ void FileHandle::close() {
 	closed=true;
 }
 
+void FileHandle::forceClose() {
+	if (readBuffer.size()) {
+		dataEvent.emit(readBuffer);
+		readBuffer.clear();
+	}
+
+	closeEvent.emit();
+	close();
+}
+
 void FileHandle::handleIncoming(std::vector<uint8_t> data) {
 	readBuffer.insert(readBuffer.end(), data.begin(), data.end());
 }
@@ -116,6 +126,11 @@ void FileHandlePair::tick() {
 void FileHandlePair::close() {
 	first->close();
 	second->close();
+}
+
+void FileHandlePair::forceClose() {
+	first->forceClose();
+	second->forceClose();
 }
 
 OpenEvent::OpenEvent(std::shared_ptr<FileHandlePair> pair_, std::string pathname_, std::string mode_) {
@@ -170,10 +185,11 @@ void Fs::tick() {
 }
 
 void Fs::close() {
+	//printf("closing fs...\n");
 	tick();
 
 	for (auto fp: pairs)
-		fp->close();
+		fp->forceClose();
 
 	for (int i=0; i<10; i++)
 		tick();

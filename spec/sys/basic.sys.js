@@ -18,16 +18,23 @@ describe("peac",()=>{
 		await peacFlash({port});
 		//let info=await peacInfo({port});
 		//console.log(info);
+		let start,duration;
 
 	    let device=await createDevice({port});
 	    let data="";
 	    while (data.length<100000)
 	    	data+=crypto.randomUUID();
 
+	    start=Date.now();
 	    await device.writeFile("/test.txt",data);
-	    console.log("written, reading back...");
+	    duration=(Date.now()-start)/1000;
 
+	    console.log("written, rate="+100000/duration);
+
+	    start=Date.now();
 	    let content=await device.readFile("/test.txt","utf8");
+	    duration=(Date.now()-start)/1000;
+	    console.log("read, rate="+100000/duration);
 	    //console.log(content);
 	    expect(content).toEqual(data);
 	    await device.close();
@@ -36,7 +43,7 @@ describe("peac",()=>{
 	it("can deploy",async ()=>{
 		await peacDeploy({
 			port, 
-			flash: true,
+			//flash: true,
 			main: path.join(__dirname,"testboot.js")
 		});
 	});

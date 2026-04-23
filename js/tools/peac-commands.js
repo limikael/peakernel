@@ -59,9 +59,18 @@ export async function peacDeploy({cwd, port, args, main, flash}) {
     if (flash)
         await peacFlash({cwd,port});
 
+    if (args[0])
+        main=args[0];
+
+    if (!main)
+        throw new DeclaredError("No file to deploy.");
+
+    console.log("Deploy: "+main);
+
     let device=await createDevice({port});
     let mainContent=await fsp.readFile(main);
     await device.writeFile("/boot.js",mainContent);
+    await device.scheduleRestart();
     await device.awaitBoot();
     await device.close();
 }

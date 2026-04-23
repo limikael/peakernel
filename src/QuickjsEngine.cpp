@@ -31,7 +31,7 @@ void QuickjsEngine::setup() {
 
 void QuickjsEngine::begin() {
 	//pinMode(4,INPUT_PULLUP);
-	Serial.printf("\n**** starting ****\n");
+	//Serial.printf("\n**** starting ****\n");
 
 	assert(ctx==NULL);
 	JSRuntime *rt=JS_NewRuntime();

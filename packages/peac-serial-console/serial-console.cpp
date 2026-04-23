@@ -10,7 +10,20 @@ std::vector<uint8_t> static stringToVec(std::string s) {
 	return v;
 }
 
+int getAllowedSendSize() {
+	if (Serial.available())
+		return 0;
+
+	int av=Serial.availableForWrite();
+	if (av>64)
+		av=64;
+
+	return av;
+}
+
 void serial_console_setup() {
+	Serial.setRxBufferSize(2048);
+	Serial.setTxBufferSize(256); // 1024?
     Serial.begin(112500);
 	Fs::getInstance()->openEvent.on([](std::shared_ptr<OpenEvent> ev) {
 		if (ev->getPathname()!="/dev/console")
@@ -22,22 +35,14 @@ void serial_console_setup() {
 
 		openConsoles.push_back(f);
 
-		f->setDataEventSize(64);
+		f->setDataEventSize(getAllowedSendSize());
 		f->dataEvent.on([](std::vector<uint8_t> data) {
 			Serial.write(data.data(),data.size());
 			Serial.flush();
 
-		    int av=Serial.availableForWrite();
-		    if (av>64)
-		    	av=64;
-
-		    if (Serial.available())
-		    	av=0;
-
+		    int av=getAllowedSendSize();
 		    for (auto c: openConsoles)
 		    	c->setDataEventSize(av);
-
-		    //Serial.printf("set buf size: %d\n",av);
 		});
 
 		f->closeEvent.on([f](){
@@ -52,24 +57,24 @@ void serial_console_setup() {
 
 void serial_console_loop() {
     std::vector<uint8_t> buffer;
+	buffer.reserve(256);
+	bool didRead=false;
 
-    bool didRead=false;
-    while (Serial.available()) {
-	    int available=Serial.available();
-        buffer.resize(available);
-        Serial.readBytes(buffer.data(), available);
-        for (auto c: openConsoles)
-        	c->write(buffer);
-
-        didRead=true;
+	while (Serial.available()) {
+		didRead=true;
+		int av=Serial.available();
+		size_t oldSize = buffer.size();
+	    buffer.resize(oldSize + av);
+	    int n = Serial.read(buffer.data() + oldSize, av);
+	    buffer.resize(oldSize + n);
     }
 
-    int av=Serial.availableForWrite();
-    if (didRead || Serial.available())
-		av=0;
+    if (!buffer.empty()) {
+        for (auto c: openConsoles)
+            c->write(buffer);
+    }
 
-    if (av>64)
-    	av=64;
+    int av=getAllowedSendSize();
     for (auto c: openConsoles)
     	c->setDataEventSize(av);
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import {Command, Option, program} from "commander";
 import {withMergedOptions} from "../utils/commander-util.js";
-import {peacFlash, peacMonitor, peacInfo, peacInit, peacCat} from "./peac-commands.js";
+import {peacFlash, peacMonitor, peacInfo, peacInit, peacCat, peacDeploy} from "./peac-commands.js";
 import {loadProjectEnv} from "../utils/env-util.js";
 
 loadProjectEnv();
@@ -35,8 +35,15 @@ program
 program
     .command("cat")
     .description("Print remote file.")
-    .argument('<file>', 'file to print')
+    .argument('<file>', 'File to print.')
     .action(withMergedOptions(peacCat));
+
+program
+    .command("deploy")
+    .description("Deploy program.")
+    .argument('[file]', 'Main file.')
+    .addOption(new Option("-m, --main <file>","Main file.").env("PEAC_MAIN"))
+    .action(withMergedOptions(peacDeploy));
 
 try {
     await program.parseAsync(process.argv);

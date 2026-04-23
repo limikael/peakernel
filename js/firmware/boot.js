@@ -76,7 +76,7 @@ function readFile(pathname) {
 
 		let data=new Uint8Array();
 		fh.on("data",chunk=>{
-			console.log("read chunk: "+chunk.length);
+			//console.log("read chunk: "+chunk.length);
 			let newData=new Uint8Array(data.length+chunk.length);
 			newData.set(data,0);
 			newData.set(chunk,data.length);
@@ -84,7 +84,7 @@ function readFile(pathname) {
 		});
 
 		fh.on("close",()=>{
-			console.log("closing...");
+			//console.log("closing...");
 			fh.close();
 			resolve(data);
 		});
@@ -122,12 +122,12 @@ function waitFor(bootWaitFor) {
 
 async function boot() {
 	let bootContent=decodeAscii(await readFile("/boot.js"));
-	console.log("running boot");
-	console.log(bootContent);
+	//console.log("running boot");
+	//console.log(bootContent);
 	eval(bootContent);
-	console.log("ran boot");
+	//console.log("ran boot");
 
-	console.log(globalThis.bootWaitFor);
+	//console.log(globalThis.bootWaitFor);
 
 	if (typeof globalThis.bootWaitFor=="function") {
 		globalThis.bootWaitFor=globalThis.bootWaitFor();
@@ -135,10 +135,13 @@ async function boot() {
 
 	await globalThis.bootWaitFor;
 
+	//console.log("boot complete");
+
 	globalThis.bootPromiseResolve();
 }
 
 async function awaitBoot() {
-	console.log("waiting for boot...");
-	return await bootPromise;
+	//console.log("waiting for boot...");
+	await bootPromise;
+	//console.log("boot resolved");
 }

@@ -16,7 +16,7 @@ extern "C" void gc() {
 }
 
 void setup() {
-	Serial.begin(115200);
+//	Serial.begin(115200);
 	peac_notify_setup();
 	engine.setup();
 	engine.begin();
