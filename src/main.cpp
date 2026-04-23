@@ -7,8 +7,8 @@ extern "C" void peac_notify_loop();
 
 QuickjsEngine engine(boot_js);
 
-extern "C" void scheduleRestart() {
-	engine.scheduleRestart();
+extern "C" void scheduleRestart(bool run) {
+	engine.scheduleRestart(run);
 }
 
 extern "C" void gc() {

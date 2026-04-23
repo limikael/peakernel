@@ -2,7 +2,7 @@
 
 extern "C" {
 #include "quickjs.h"
-void scheduleRestart();
+void scheduleRestart(bool run);
 void gc();
 }
 
@@ -13,10 +13,11 @@ public:
 	void begin();
 	void close();
 	void loop();
-	void scheduleRestart();
+	void scheduleRestart(bool running);
 	void gc();
 
 private:
+	bool running=true;
 	std::string errorMessage;
 	SoftTimer warningTimer;
 	SoftTimer gcTimer;

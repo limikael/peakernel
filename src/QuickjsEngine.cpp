@@ -14,7 +14,7 @@ QuickjsEngine::QuickjsEngine(const char *boot_)
 }
 
 void QuickjsEngine::setup() {
-	getInfoCollector()->collect.on([](std::shared_ptr<InfoRecord> record) {
+	getInfoCollector()->collect.on([this](std::shared_ptr<InfoRecord> record) {
 		multi_heap_info_t info;
 		heap_caps_get_info(&info, MALLOC_CAP_DEFAULT);
 		record->setInt("totalHeap",info.total_free_bytes+info.total_allocated_bytes);
@@ -26,13 +26,16 @@ void QuickjsEngine::setup() {
 		record->setInt("openFiles",Fs::getInstance()->getNumOpenFiles());
 		record->setInt("liveObjects",peac_bindings_get_num_objects());
 		record->setInt("numListeners",peac_bindings_get_num_listeners());
+
+		if (running)
+			record->setString("state","running");
+
+		else
+			record->setString("state","stopped");
 	});
 }
 
 void QuickjsEngine::begin() {
-	//pinMode(4,INPUT_PULLUP);
-	//Serial.printf("\n**** starting ****\n");
-
 	assert(ctx==NULL);
 	JSRuntime *rt=JS_NewRuntime();
     ctx=JS_NewContext(rt);
@@ -49,16 +52,18 @@ void QuickjsEngine::begin() {
 
 	jsvalFree(res);
 
-	JSVAL bootFn=jsvalGetProp(jsvalGetGlobal(),"boot");
-	JSVAL bootRes=jsvalCall(bootFn,jsvalUndefined(),0,NULL);
-	if (jsvalHasException()) {
-		errorMessage=jsvalCatchExceptionStdString();
-		jsvalFree(bootRes);
-		return;
-	}
+	if (running) {
+		JSVAL bootFn=jsvalGetProp(jsvalGetGlobal(),"boot");
+		JSVAL bootRes=jsvalCall(bootFn,jsvalUndefined(),0,NULL);
+		if (jsvalHasException()) {
+			errorMessage=jsvalCatchExceptionStdString();
+			jsvalFree(bootRes);
+			return;
+		}
 
-	jsvalFree(bootFn);
-	jsvalFree(bootRes);
+		jsvalFree(bootFn);
+		jsvalFree(bootRes);
+	}
 }
 
 void QuickjsEngine::close() {
@@ -106,7 +111,8 @@ void QuickjsEngine::loop() {
 	}
 }
 
-void QuickjsEngine::scheduleRestart() {
+void QuickjsEngine::scheduleRestart(bool run) {
+	running=run;
 	restartScheduled=true;
 }
 

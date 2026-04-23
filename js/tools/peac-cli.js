@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import {Command, Option, program} from "commander";
 import {withMergedOptions} from "../utils/commander-util.js";
-import {peacFlash, peacMonitor, peacInfo, peacInit, peacCat, peacDeploy} from "./peac-commands.js";
+import {peacFlash, peacMonitor, peacInfo, peacInit, peacCat, peacDeploy,
+        peacStart, peacStop} from "./peac-commands.js";
 import {loadProjectEnv} from "../utils/env-util.js";
 
 loadProjectEnv();
@@ -45,6 +46,16 @@ program
     .addOption(new Option("-m, --main <file>","Main file.").env("PEAC_MAIN"))
     .option("--flash","Flash device before deploying.")
     .action(withMergedOptions(peacDeploy));
+
+program
+    .command("start")
+    .description("Start the current program.")
+    .action(withMergedOptions(peacStart));
+
+program
+    .command("stop")
+    .description("Stop the current program.")
+    .action(withMergedOptions(peacStop));
 
 try {
     await program.parseAsync(process.argv);

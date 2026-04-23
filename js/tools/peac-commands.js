@@ -75,7 +75,20 @@ export async function peacDeploy({cwd, port, args, main, flash}) {
     let device=await createDevice({port});
     let mainContent=await fsp.readFile(main);
     await device.writeFile("/boot.js",mainContent);
-    await device.scheduleRestart();
+    await device.scheduleRestart(true);
+    await device.awaitBoot();
+    await device.close();
+}
+
+export async function peacStop({cwd, port}) {
+    let device=await createDevice({port});
+    await device.scheduleRestart(false);
+    await device.close();
+}
+
+export async function peacStart({cwd, port}) {
+    let device=await createDevice({port});
+    await device.scheduleRestart(true);
     await device.awaitBoot();
     await device.close();
 }
