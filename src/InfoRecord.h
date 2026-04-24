@@ -46,8 +46,12 @@ private:
 
 class InfoCollector {
 public:
-	Dispatcher<std::shared_ptr<InfoRecord>> collect;
+	Dispatcher<std::shared_ptr<InfoRecord>> collectEvent;
+	static std::shared_ptr<InfoCollector> getInstance();
+	std::shared_ptr<InfoRecord> collectInfo();
+private:
+	InfoCollector() {}
 };
 
-std::shared_ptr<InfoCollector> getInfoCollector();
-std::shared_ptr<InfoRecord> collectInfo();
+/*std::shared_ptr<InfoCollector> getInfoCollector();
+std::shared_ptr<InfoRecord> collectInfo();*/

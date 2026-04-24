@@ -8,12 +8,12 @@
 void test_InfoRecord() {
 	printf("- info record\n");
 
-	getInfoCollector()->collect.on([](std::shared_ptr<InfoRecord> info) {
+	InfoCollector::getInstance()->collectEvent.on([](std::shared_ptr<InfoRecord> info) {
 		info->setString("hello","world");
 		info->setInt("hello2",123);
 	});
 
-	std::shared_ptr<InfoRecord> info=collectInfo();
+	std::shared_ptr<InfoRecord> info=InfoCollector::getInstance()->collectInfo();
 	assert(info->getString("hello")=="world");
 	assert(info->getInt("hello2")==123);
 	assert(info->getType("hello")=="string");

@@ -93,7 +93,7 @@ function readFile(pathname) {
 
 function getInfo() {
 	let o={};
-	let info=collectInfo();
+	let info=InfoCollector.getInstance().collectInfo();
 	let keys=info.getKeys();
 	for (let i=0; i<keys.size(); i++) {
 		let key=keys.at(i);

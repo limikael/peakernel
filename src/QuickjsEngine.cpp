@@ -14,7 +14,7 @@ QuickjsEngine::QuickjsEngine(const char *boot_)
 }
 
 void QuickjsEngine::setup() {
-	getInfoCollector()->collect.on([this](std::shared_ptr<InfoRecord> record) {
+	InfoCollector::getInstance()->collectEvent.on([this](std::shared_ptr<InfoRecord> record) {
 		multi_heap_info_t info;
 		heap_caps_get_info(&info, MALLOC_CAP_DEFAULT);
 		record->setInt("totalHeap",info.total_free_bytes+info.total_allocated_bytes);

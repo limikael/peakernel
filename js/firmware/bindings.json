@@ -37,10 +37,16 @@
 				"getType": {"args": ["string"], "return": "string"},
 				"getKeys": {"return": "StringArray"}
 			}
+		},
+		"InfoCollector": {
+			"constructible": false,
+			"methods": {
+				"collectInfo": {"return": "InfoRecord"},
+				"getInstance": {"return": "InfoCollector", "static": true}
+			}
 		}
 	},
 	"functions": {
-		"collectInfo": {"return": "InfoRecord"},
 		"encodeBase64": {"args": ["buffer"], "return": "string"},
 		"decodeBase64": {"args": ["string"], "return": "buffer"},
 		"encodeAscii": {"args": ["string"], "return": "buffer"},

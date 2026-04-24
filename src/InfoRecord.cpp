@@ -1,6 +1,6 @@
 #include "InfoRecord.h"
 
-static std::shared_ptr<InfoCollector> infoCollectorInstance;
+//static std::shared_ptr<InfoCollector> infoCollectorInstance;
 
 std::string InfoRecord::getString(std::string key) {
 	if (values.find(key)==values.end())
@@ -46,15 +46,24 @@ std::shared_ptr<StringArray> InfoRecord::getKeys() {
 	return a;
 }
 
-std::shared_ptr<InfoCollector> getInfoCollector() {
+/*std::shared_ptr<InfoCollector> getInfoCollector() {
 	if (infoCollectorInstance==nullptr)
 		infoCollectorInstance=std::make_shared<InfoCollector>();
 
 	return infoCollectorInstance;
+}*/
+
+std::shared_ptr<InfoRecord> InfoCollector::collectInfo() {
+	auto infoRecord=std::make_shared<InfoRecord>();
+	collectEvent.emit(infoRecord);
+	return infoRecord;
 }
 
-std::shared_ptr<InfoRecord> collectInfo() {
-	auto infoRecord=std::make_shared<InfoRecord>();
-	getInfoCollector()->collect.emit(infoRecord);
-	return infoRecord;
+std::shared_ptr<InfoCollector> InfoCollector::getInstance() {
+	static std::shared_ptr<InfoCollector> instance=nullptr;
+
+	if (instance==nullptr)
+		instance=std::shared_ptr<InfoCollector>(new InfoCollector());
+
+	return instance;
 }
