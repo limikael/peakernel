@@ -20,6 +20,7 @@
   "dependencies": {
     "@serialport/parser-readline": "^13.0.0",
     "commander": "^14.0.3",
+    "console-table-without-index": "^0.1.1",
     "dotenv": "^17.4.2",
     "hook-channel": "^1.0.0",
     "json5": "^2.2.3",

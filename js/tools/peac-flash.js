@@ -7,6 +7,7 @@ import {peabind, peabindMerge, peabindGetLibConf} from "peabind";
 import {escapeCString, unindent, autoIndent} from "../utils/lang-util.js";
 import JSON5 from "json5";
 import PeacBuildEvent from "./PeacBuildEvent.js";
+import {peacLoadHookChannel} from "./peac-commands.js";
 
 let __dirname=dirnameFromImportMeta(import.meta);
 
@@ -74,13 +75,14 @@ class PeacFlasher {
     }
 
     async createBuildEvent() {
-        let hookChannel=await loadHookChannel({
+        /*let hookChannel=await loadHookChannel({
             cwd: this.cwd,
             keyword: "peac-plugin",
             exportPath: "peac-build-hooks",
             extraModuleDirs: path.join(__dirname,"../../packages")
-        });
+        });*/
 
+        let hookChannel=await peacLoadHookChannel({cwd: this.cwd});
         let ev=await hookChannel.dispatch(new PeacBuildEvent());
 
         ev.addBootFile(path.join(__dirname,"../firmware/boot.js"));

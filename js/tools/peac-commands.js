@@ -1,4 +1,4 @@
-import {dirnameFromImportMeta, runCommand, packageDirname} from "../utils/node-util.js";
+import {dirnameFromImportMeta, runCommand, packageDirname, table} from "../utils/node-util.js";
 import path from "path";
 import {peacFlash} from "./peac-flash.js";
 export {peacFlash} from "./peac-flash.js";
@@ -7,8 +7,20 @@ import {SerialDeviceConnection, createSerialDeviceConnection} from "../device/Se
 import {proxyComposeFb} from "../utils/proxy-compose.js";
 import fs, {promises as fsp} from "fs";
 import {DeclaredError} from "../utils/js-util.js";
+import {loadHookChannel, HookEvent} from "hook-channel";
 
 let __dirname=dirnameFromImportMeta(import.meta);
+
+export async function peacLoadHookChannel({cwd}) {
+    return await loadHookChannel({
+        cwd,
+        keyword: "peac-plugin",
+        exportPath: "peac-build-hooks",
+        extraModuleDirs: path.join(__dirname,"../../packages"),
+        enableKey: "enablePlugins",
+        disableKey: "disablePlugins"
+    });    
+}
 
 export async function peacMonitor({cwd, port}) {
     cwd=packageDirname(cwd);
@@ -91,4 +103,28 @@ export async function peacStart({cwd, port}) {
     await device.scheduleRestart(true);
     await device.awaitBoot();
     await device.close();
+}
+
+export async function peacLsmod({cwd}) {
+    cwd=packageDirname(cwd);
+    let hookChannel=await peacLoadHookChannel({cwd});
+    let moduleViews=hookChannel.getModules().map(m=>({
+        Name: m.getName(),
+        Description: m.getDescription(),
+        Enabled: m.isEnabled(),
+    }));
+
+    table(moduleViews);
+}
+
+export async function peacEnable({cwd, args}) {
+    cwd=packageDirname(cwd);
+    let hookChannel=await peacLoadHookChannel({cwd});
+    await hookChannel.enablePlugin(args[0]);
+}
+
+export async function peacDisable({cwd, args}) {
+    cwd=packageDirname(cwd);
+    let hookChannel=await peacLoadHookChannel({cwd});
+    await hookChannel.disablePlugin(args[0]);
 }

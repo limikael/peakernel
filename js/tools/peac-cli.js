@@ -2,7 +2,7 @@
 import {Command, Option, program} from "commander";
 import {withMergedOptions} from "../utils/commander-util.js";
 import {peacFlash, peacMonitor, peacInfo, peacInit, peacCat, peacDeploy,
-        peacStart, peacStop} from "./peac-commands.js";
+        peacStart, peacStop, peacLsmod, peacEnable, peacDisable} from "./peac-commands.js";
 import {loadProjectEnv} from "../utils/env-util.js";
 
 loadProjectEnv();
@@ -56,6 +56,23 @@ program
     .command("stop")
     .description("Stop the current program.")
     .action(withMergedOptions(peacStop));
+
+program
+    .command("lsmod")
+    .description("List plugin modules.")
+    .action(withMergedOptions(peacLsmod));
+
+program
+    .command("enable")
+    .description("Enable plugin.")
+    .argument('<name>', 'Plugin name.')
+    .action(withMergedOptions(peacEnable));
+
+program
+    .command("disable")
+    .description("Disable plugin.")
+    .argument('<name>', 'Plugin name.')
+    .action(withMergedOptions(peacDisable));
 
 try {
     await program.parseAsync(process.argv);
