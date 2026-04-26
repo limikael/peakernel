@@ -1,16 +1,19 @@
 todo:
+- try esp-idf
+- internal plugins (not listed)
 - rename
-- modularize
-- plugin priority
-- enable/disable plugins
-- PEABIND_AUTO_INCLUDE ?
+- make plugins more optional
+- mquickjs
+- w/o Arduino, i.e. esp-idf
+x plugin priority <-- instead... addSource(...,{priority:})
+x modularize
+x enable/disable plugins
 x static
 x throw and handle exceptions correctly
 
 backlog:
-- mquickjs
+- PEABIND_AUTO_INCLUDE ?
 - commands and shell (exec)
-- w/o Arduino
 
 old:
 x FS
