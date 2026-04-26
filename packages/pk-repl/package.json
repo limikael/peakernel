@@ -1,0 +1,8 @@
+{
+	"name": "pk-repl",
+	"keywords": ["peakernel-plugin"],
+	"type": "module",
+	"exports": {
+		"./peakernel-project-hooks": "./build.js"
+	}
+}

@@ -1,4 +1,4 @@
-#include "peac_bindings.out.h"
+#include "pk_bindings.out.h"
 #include <string>
 #include "Fs.h"
 #include <fstream>
@@ -46,7 +46,7 @@ std::vector<uint8_t> static stringToVec(std::string s) {
 void test_sys() {
 	printf("- testing that things are cleaned up...\n");
     jsvalQuickjsInit();
-	peac_bindings_init_jsval();
+	pk_bindings_init_jsval();
 
 	Fs::getInstance()->openEvent.on([](std::shared_ptr<OpenEvent> ev){
 		if (ev->getPathname()!="/testfile")
@@ -69,7 +69,7 @@ void test_sys() {
 	});
 
 	evaljs("globalThis.fs=Fs.getInstance()");
-	evaljs(readFile("packages/peac-vfs/boot.js"));
+	evaljs(readFile("packages/pk-vfs/boot.js"));
 	evaljs("globalThis.f=Fs.getInstance().open('/testfile','r');");
 	evaljs("globalThis.g=Fs.getInstance().open('/hello','r');");
 //	evaljs("globalThis.f.write(encodeAscii('test'))");
@@ -80,6 +80,6 @@ void test_sys() {
 	Fs::getInstance()->tick();
 	Fs::getInstance()->tick();
 
-	peac_bindings_exit();
+	pk_bindings_exit();
 	jsvalQuickjsExit();
 }

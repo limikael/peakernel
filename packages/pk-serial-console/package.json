@@ -1,0 +1,8 @@
+{
+	"name": "pk-serial-console",
+	"keywords": ["peakernel-plugin"],
+	"type": "module",
+	"exports": {
+		"./peakernel-project-hooks": "./build.js"
+	}
+}

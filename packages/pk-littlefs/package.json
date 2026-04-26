@@ -1,0 +1,9 @@
+{
+  "name": "pk-littlefs",
+  "description": "Storage in littlefs",
+  "keywords": ["peakernel-plugin"],
+  "type": "module",
+  "exports": {
+    "./peakernel-project-hooks": "./build.js"
+  }
+}

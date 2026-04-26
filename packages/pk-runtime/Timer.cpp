@@ -1,5 +1,13 @@
+#include <cassert>
+#include <algorithm>
 #include "Timer.h"
+#ifdef ARDUINO
 #include <Arduino.h>
+#else
+static int millis() {
+    assert(0 && "millis not implemented");
+}
+#endif
 
 static int nextTimerId=1;
 static std::vector<std::shared_ptr<Timer>> timers;

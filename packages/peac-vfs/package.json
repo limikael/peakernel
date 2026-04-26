@@ -1,9 +1,0 @@
-{
-	"name": "peac-vfs",
-	"description": "Virtual file system",
-	"keywords": ["peac-plugin"],
-	"type": "module",
-	"exports": {
-		"./peac-build-hooks": "./build.js"
-	}
-}

@@ -1,10 +1,10 @@
 #include <Arduino.h>
-#include "peac.h"
+#include "peakernel.h"
 
 void setup() {
-	peac_setup();
+	peakernel_setup();
 }
 
 void loop() {
-	peac_loop();
+	peakernel_loop();
 }

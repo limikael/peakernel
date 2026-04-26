@@ -1,9 +1,0 @@
-{
-  "name": "peac-info",
-  "description": "Provide system info",
-  "keywords": ["peac-plugin"],
-  "type": "module",
-  "exports": {
-    "./peac-build-hooks": "./build.js"
-  }
-}

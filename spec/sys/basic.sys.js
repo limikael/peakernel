@@ -1,4 +1,4 @@
-import {peacFlash, peacInfo, peacDeploy} from "../../js/tools/peac-commands.js";
+import {peakernelFlash, peakernelInfo, peakernelDeploy} from "../../js/tools/peakernel-commands.js";
 import {createDevice} from "../../js/device/Device.js";
 import {dirnameFromImportMeta, runCommand, packageDirname} from "../../js/utils/node-util.js";
 import path from "path";
@@ -7,16 +7,16 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL=60000*5;
 
 let __dirname=dirnameFromImportMeta(import.meta);
 
-describe("peac",()=>{
+describe("peakernel",()=>{
 	let port="/dev/ttyESP-58:8C:81:AA:02:94";
 
 	it("can flash",async()=>{
-		await peacFlash({port});
+		await peakernelFlash({port});
 	});
 
 	it("can communicate with the mcu",async ()=>{
-		await peacFlash({port});
-		//let info=await peacInfo({port});
+		await peakernelFlash({port});
+		//let info=await peakernelInfo({port});
 		//console.log(info);
 		let start,duration;
 

@@ -1,9 +1,0 @@
-{
-	"name": "peac-gpio",
-	"description": "GPIO functionality",
-	"keywords": ["peac-plugin"],
-	"type": "module",
-	"exports": {
-		"./peac-build-hooks": "./build.js"
-	}
-}

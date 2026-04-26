@@ -2,16 +2,17 @@
 
 test:
 	rm -f test/*.out.*
-	peabind -tquickjs packages/peac-vfs/bindings.json -otest/peac_bindings.out.cpp -ppeac_bindings_
+	peabind -tquickjs packages/pk-vfs/bindings.json packages/pk-runtime/bindings.json -otest/pk_bindings.out.cpp -ppk_bindings_
 	wrapcc -std=c++20 \
 		-o bin/testmain \
 		test/*.cpp \
-		packages/peac-runtime/encoding.cpp \
-		packages/peac-info/InfoRecord.cpp \
-		packages/peac-vfs/Fs.cpp \
-		-Ipackages/peac-vfs \
-		-Ipackages/peac-info \
-		-Ipackages/peac-runtime \
+		packages/pk-runtime/encoding.cpp \
+		packages/pk-runtime/Timer.cpp \
+		packages/pk-info/InfoRecord.cpp \
+		packages/pk-vfs/Fs.cpp \
+		-Ipackages/pk-vfs \
+		-Ipackages/pk-info \
+		-Ipackages/pk-runtime \
 		-Ivendor/quickjs \
 		$(shell peabind --lib-conf=cargs -tquickjs) \
 		-O0 \

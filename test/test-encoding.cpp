@@ -3,7 +3,7 @@
 #include <cassert>
 #include <deque>
 #include <string>
-#include "peac_bindings.out.h"
+#include "pk_bindings.out.h"
 
 static std::string evaljs(std::string code) {
     JSVAL res=jsvalEval(code.c_str());
@@ -22,7 +22,7 @@ static std::string evaljs(std::string code) {
 void test_encoding() {
 	printf("- testing encoding...\n");
     jsvalQuickjsInit();
-	peac_bindings_init_jsval();
+	pk_bindings_init_jsval();
 
 	std::string s=evaljs("globalThis.s=encodeBase64(encodeAscii('ABC')); globalThis.s");
 	assert(s=="QUJD");
@@ -32,6 +32,6 @@ void test_encoding() {
 	//printf("dec: %s\n",t.c_str());
 
 
-	peac_bindings_exit();
+	pk_bindings_exit();
 	jsvalQuickjsExit();
 }

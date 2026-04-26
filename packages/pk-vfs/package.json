@@ -1,0 +1,9 @@
+{
+	"name": "pk-vfs",
+	"description": "Virtual file system",
+	"keywords": ["peakernel-plugin"],
+	"type": "module",
+	"exports": {
+		"./peakernel-proejct-hooks": "./build.js"
+	}
+}

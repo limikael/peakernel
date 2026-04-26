@@ -10,7 +10,7 @@
     "test:sys": "jasmine --config=spec/support/jasmine-sys.mjs"
   },
   "bin": {
-    "peac": "./js/tools/peac-cli.js"
+    "peakernel": "./js/tools/peakernel-cli.js"
   },
   "type": "module",
   "keywords": [],

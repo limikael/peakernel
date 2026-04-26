@@ -1,0 +1,9 @@
+{
+  "name": "pk-info",
+  "description": "Provide system info",
+  "keywords": ["peakernel-plugin"],
+  "type": "module",
+  "exports": {
+    "./peakernel-project-hooks": "./build.js"
+  }
+}
