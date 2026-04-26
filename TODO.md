@@ -1,10 +1,9 @@
 todo:
-- try esp-idf
 - internal plugins (not listed)
-- rename
-- make plugins more optional
+- make plugins more optional... flash boot file
 - mquickjs
 - w/o Arduino, i.e. esp-idf
+x rename
 x plugin priority <-- instead... addSource(...,{priority:})
 x modularize
 x enable/disable plugins
