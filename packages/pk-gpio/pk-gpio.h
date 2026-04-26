@@ -9,7 +9,7 @@ extern "C" {
 	void gpio_loop();
 }
 
-namespace peac_gpio {
+namespace pk_gpio {
 
 int digitalRead(int pin);
 void digitalWrite(int pin, int value);
@@ -20,8 +20,8 @@ void pinMode(int pin, std::string mode);
 class Pin {
 public:
 	Pin(int pinNum_) { pinNum=pinNum_; }
-	int get() { return peac_gpio::digitalRead(pinNum); }
-	void set(int v) { peac_gpio::digitalWrite(pinNum,v); }
+	int get() { return pk_gpio::digitalRead(pinNum); }
+	void set(int v) { pk_gpio::digitalWrite(pinNum,v); }
 	void check() {
 		int currentValue=::digitalRead(pinNum);
 		if (currentValue!=reportedValue) {

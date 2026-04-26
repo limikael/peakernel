@@ -1,7 +1,7 @@
 import {dirnameFromImportMeta, runCommand, packageDirname, table} from "../utils/node-util.js";
 import path from "path";
-import {peacFlash} from "./peac-flash.js";
-export {peacFlash} from "./peac-flash.js";
+import {peakernelFlash} from "./peakernel-flash.js";
+export {peakernelFlash} from "./peakernel-flash.js";
 import {createDevice} from "../device/Device.js";
 import {SerialDeviceConnection, createSerialDeviceConnection} from "../device/SerialDeviceConnection.js";
 import {proxyComposeFb} from "../utils/proxy-compose.js";
@@ -11,25 +11,25 @@ import {loadHookChannel, HookEvent} from "hook-channel";
 
 let __dirname=dirnameFromImportMeta(import.meta);
 
-export async function peacLoadHookChannel({cwd}) {
+export async function peakernelLoadHookChannel({cwd}) {
     return await loadHookChannel({
         cwd,
-        keyword: "peac-plugin",
-        exportPath: "peac-build-hooks",
+        keyword: "peakernel-plugin",
+        exportPath: "peakernel-project-hooks",
         extraModuleDirs: path.join(__dirname,"../../packages"),
         enableKey: "enablePlugins",
         disableKey: "disablePlugins"
     });    
 }
 
-export async function peacMonitor({cwd, port}) {
+export async function peakernelMonitor({cwd, port}) {
     cwd=packageDirname(cwd);
     let targetPath=path.join(cwd,".target");
 
     await runCommand("pio",["device","monitor"],{cwd: targetPath});
 }
 
-export async function peacInit({cwd}) {
+export async function peakernelInit({cwd}) {
     if (!cwd)
         cwd=process.cwd();
 
@@ -37,33 +37,33 @@ export async function peacInit({cwd}) {
     if (fs.existsSync(packageJsonPath))
         throw new DeclaredError("package.json already exists");
 
-    let peacPkg=JSON.parse(fs.readFileSync(path.join(__dirname,"../../package.json")));
+    let peakernelPkg=JSON.parse(fs.readFileSync(path.join(__dirname,"../../package.json")));
     let pkg={
         "name": path.basename(cwd),
         "type": "module",
         "scripts": {
-            "flash": "peac flash"
+            "flash": "peakernel flash"
         },
         "dependencies": {
-            "peac": `^${peacPkg.version}`
+            "peakernel": `^${peakernelPkg.version}`
         }
     }
 
     fs.writeFileSync(path.join(cwd,"package.json"),JSON.stringify(pkg,null,2));
 }
 
-export async function peacCat({cwd, port, args}) {
+export async function peakernelCat({cwd, port, args}) {
     let device=await createDevice({port});
     let content=await device.readFile(args[0],"utf8");
     console.log(content);
     await device.close();
 }
 
-export async function peacDeploy({cwd, port, args, main, flash}) {
+export async function peakernelDeploy({cwd, port, args, main, flash}) {
     cwd=packageDirname(cwd);
 
     if (flash)
-        await peacFlash({cwd,port});
+        await peakernelFlash({cwd,port});
 
     if (args[0])
         main=args[0];
@@ -84,22 +84,22 @@ export async function peacDeploy({cwd, port, args, main, flash}) {
     await device.close();
 }
 
-export async function peacStop({cwd, port}) {
+export async function peakernelStop({cwd, port}) {
     let device=await createDevice({port});
     await device.scheduleRestart(false);
     await device.close();
 }
 
-export async function peacStart({cwd, port}) {
+export async function peakernelStart({cwd, port}) {
     let device=await createDevice({port});
     await device.scheduleRestart(true);
     await device.awaitBoot();
     await device.close();
 }
 
-export async function peacLsmod({cwd}) {
+export async function peakernelLsmod({cwd}) {
     cwd=packageDirname(cwd);
-    let hookChannel=await peacLoadHookChannel({cwd});
+    let hookChannel=await peakernelLoadHookChannel({cwd});
     let moduleViews=hookChannel.getModules().map(m=>({
         Name: m.getName(),
         Description: m.getDescription(),
@@ -109,14 +109,14 @@ export async function peacLsmod({cwd}) {
     table(moduleViews);
 }
 
-export async function peacEnable({cwd, args}) {
+export async function peakernelEnable({cwd, args}) {
     cwd=packageDirname(cwd);
-    let hookChannel=await peacLoadHookChannel({cwd});
+    let hookChannel=await peakernelLoadHookChannel({cwd});
     await hookChannel.enablePlugin(args[0]);
 }
 
-export async function peacDisable({cwd, args}) {
+export async function peakernelDisable({cwd, args}) {
     cwd=packageDirname(cwd);
-    let hookChannel=await peacLoadHookChannel({cwd});
+    let hookChannel=await peakernelLoadHookChannel({cwd});
     await hookChannel.disablePlugin(args[0]);
 }

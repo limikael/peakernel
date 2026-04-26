@@ -1,5 +1,6 @@
 {
 	"name": "pk-quickjs",
+	"description": "JavaScript using the quickjs engine.",
 	"keywords": ["peakernel-plugin"],
 	"type": "module",
 	"exports": {

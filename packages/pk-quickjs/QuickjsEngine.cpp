@@ -1,5 +1,5 @@
 #include "QuickjsEngine.h"
-#include "peac_bindings.h"
+#include "pk_bindings.h"
 #include "jsval-util.h"
 #include "esp_heap_caps.h"
 
@@ -23,8 +23,8 @@ void QuickjsEngine::setup() {
 		record->setInt("minimumFreeBytes",info.minimum_free_bytes);
 		record->setInt("largestBlock",info.largest_free_block);
 		record->setInt("freeBlocks",info.free_blocks);
-		record->setInt("liveObjects",peac_bindings_get_num_objects());
-		record->setInt("numListeners",peac_bindings_get_num_listeners());
+		record->setInt("liveObjects",pk_bindings_get_num_objects());
+		record->setInt("numListeners",pk_bindings_get_num_listeners());
 
 		if (running)
 			record->setString("state","running");
@@ -41,7 +41,7 @@ void QuickjsEngine::begin() {
     ctx=JS_NewContext(rt);
 	errorMessage="";
 
-	peac_bindings_init(ctx);
+	pk_bindings_init(ctx);
 }
 
 void QuickjsEngine::runBootScript() {
@@ -70,11 +70,11 @@ void QuickjsEngine::runBootScript() {
 
 void QuickjsEngine::close() {
 	assert(ctx!=NULL);
-	peac_bindings_exit();
+	pk_bindings_exit();
 	JSRuntime *rt=JS_GetRuntime(ctx);
     JS_FreeContext(ctx);
     JS_RunGC(rt);
-    assert(peac_bindings_get_num_objects()==0);
+    assert(pk_bindings_get_num_objects()==0);
     JS_FreeRuntime(rt);
 	ctx=nullptr;
 }
@@ -96,14 +96,14 @@ void QuickjsEngine::gc() {
 	jsvalQuickjsRunGc();
 }
 
-extern "C" void peac_restart();
+extern "C" void peakernel_restart();
 
 extern const char boot_js[];
 QuickjsEngine engine(boot_js);
 
 extern "C" void scheduleRestart(bool run) {
 	engine.setRunning(run);
-	peac_restart();
+	peakernel_restart();
 }
 
 extern "C" void gc() {

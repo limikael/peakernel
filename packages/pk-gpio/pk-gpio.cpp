@@ -1,4 +1,4 @@
-#include "peac-gpio.h"
+#include "pk-gpio.h"
 
 static std::map<int,std::shared_ptr<Pin>> pins;
 
@@ -9,15 +9,15 @@ std::shared_ptr<Pin> pin(int pinNum) {
 	return pins[pinNum];
 }
 
-int peac_gpio::digitalRead(int pin) {
+int pk_gpio::digitalRead(int pin) {
 	return ::digitalRead(pin);
 }
 
-void peac_gpio::digitalWrite(int pin, int value) {
+void pk_gpio::digitalWrite(int pin, int value) {
 	::digitalWrite(pin, value);
 }
 
-void peac_gpio::pinMode(int pin, std::string mode) {
+void pk_gpio::pinMode(int pin, std::string mode) {
 	if (mode=="input")
 		::pinMode(pin,INPUT);
 

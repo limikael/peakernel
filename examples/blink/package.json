@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "flash": "peac flash"
+    "flash": "peakernel flash"
   },
   "keywords": [],
   "author": "",

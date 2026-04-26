@@ -4,6 +4,6 @@
 	"keywords": ["peakernel-plugin"],
 	"type": "module",
 	"exports": {
-		"./peakernel-proejct-hooks": "./build.js"
+		"./peakernel-project-hooks": "./build.js"
 	}
 }

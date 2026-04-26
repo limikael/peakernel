@@ -1,5 +1,5 @@
 {
-	"include": ["peac-gpio.h"],
+	"include": ["pk-gpio.h"],
 	"classes": {
 		"Pin": {
 			"ctorArgs": ["int"],
@@ -13,9 +13,9 @@
 		}
 	},
 	"functions": {
-		"pinMode": {"args": ["int","string"], "namespace": "peac_gpio"},
-		"digitalRead": {"args": ["int"], "return": "int", "namespace": "peac_gpio"},
-		"digitalWrite": {"args": ["int","int"], "namespace": "peac_gpio"},
+		"pinMode": {"args": ["int","string"], "namespace": "pk_gpio"},
+		"digitalRead": {"args": ["int"], "return": "int", "namespace": "pk_gpio"},
+		"digitalWrite": {"args": ["int","int"], "namespace": "pk_gpio"},
 		"pin": {"args": ["int"], "return": "Pin"}
 	}
 }

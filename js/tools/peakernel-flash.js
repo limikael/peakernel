@@ -6,12 +6,12 @@ import {loadHookChannel, HookEvent} from "hook-channel";
 import {peabind, peabindMerge, peabindGetLibConf} from "peabind";
 import {escapeCString, unindent, autoIndent} from "../utils/lang-util.js";
 import JSON5 from "json5";
-import PeacBuildEvent from "./PeacBuildEvent.js";
-import {peacLoadHookChannel} from "./peac-commands.js";
+import PeakernelBuildEvent from "./PeakernelBuildEvent.js";
+import {peakernelLoadHookChannel} from "./peakernel-commands.js";
 
 let __dirname=dirnameFromImportMeta(import.meta);
 
-class PeacFlasher {
+class PeakernelFlasher {
     constructor({cwd, port, dryRun}) {
         if (!port)
             throw new DeclaredError("No port specified.");
@@ -24,6 +24,8 @@ class PeacFlasher {
     generatePlatformioIni(ev) {
         let port=this.port;
         let includeDirs=ev.includeDirs;
+
+        //console.log(includeDirs);
 
         fs.mkdirSync(path.join(this.targetPath,"src-ext"),{recursive: true});
 
@@ -48,7 +50,7 @@ class PeacFlasher {
         sources.push(path.join(this.targetPath,"src-ext"));
 
         return unindent(`
-            [env:peac]
+            [env:peakernel]
             platform = espressif32
             board = esp32-c3-devkitm-1
             framework = arduino
@@ -76,8 +78,8 @@ class PeacFlasher {
     }
 
     async createBuildEvent() {
-        let hookChannel=await peacLoadHookChannel({cwd: this.cwd});
-        let ev=await hookChannel.dispatch(new PeacBuildEvent());
+        let hookChannel=await peakernelLoadHookChannel({cwd: this.cwd});
+        let ev=await hookChannel.dispatch(new PeakernelBuildEvent());
 
         ev.addIncludeDir(this.targetPath);
         ev.addIncludeDir(path.join(__dirname,"../../src"));
@@ -109,7 +111,7 @@ class PeacFlasher {
         return path.relative(this.targetPath,fileOrDir);
     }
 
-    generatePeacMain(ev) {
+    generatePeakernelMain(ev) {
         return autoIndent(`
             extern "C" {
                 ${ev.setupFunctions.map(f=>`void ${f}();`).join("\n")}
@@ -117,19 +119,19 @@ class PeacFlasher {
                 ${ev.getStartFunctions().map(f=>`void ${f}();`).join("\n")}
                 ${ev.getStopFunctions().map(f=>`void ${f}();`).join("\n")}
 
-                void peac_notify_setup() {
+                void peakernel_notify_setup() {
                     ${ev.setupFunctions.map(f=>`${f}();`).join("\n")}
                 }
 
-                void peac_notify_loop() {
+                void peakernel_notify_loop() {
                     ${ev.loopFunctions.map(f=>`${f}();`).join("\n")}
                 }
 
-                void peac_notify_start() {
+                void peakernel_notify_start() {
                     ${ev.getStartFunctions().map(f=>`${f}();`).join("\n")}
                 }
 
-                void peac_notify_stop() {
+                void peakernel_notify_stop() {
                     ${ev.getStopFunctions().map(f=>`${f}();`).join("\n")}
                 }
             }
@@ -146,8 +148,8 @@ class PeacFlasher {
     }
 }
 
-export async function peacFlash({cwd, port, dryRun}) {
-    let flasher=new PeacFlasher({cwd, port});
+export async function peakernelFlash({cwd, port, dryRun}) {
+    let flasher=new PeakernelFlasher({cwd, port});
 
     let ev=await flasher.createBuildEvent();
     fs.mkdirSync(flasher.targetPath,{recursive: true});
@@ -155,8 +157,8 @@ export async function peacFlash({cwd, port, dryRun}) {
     await peabind({
         idl: peabindMerge(ev.bindings.map(b=>flasher.loadJsonIfFilename(b))),
         target: "quickjs",
-        output: path.join(flasher.targetPath,"peac_bindings.cpp"),
-        prefix: "peac_bindings_"
+        output: path.join(flasher.targetPath,"pk_bindings.cpp"),
+        prefix: "pk_bindings_"
     });
 
     let boot=flasher.generateBootContent(ev);
@@ -165,8 +167,8 @@ export async function peacFlash({cwd, port, dryRun}) {
     let iniSource=flasher.generatePlatformioIni(ev);
     fs.writeFileSync(path.join(flasher.targetPath,"platformio.ini"),iniSource);
 
-    let peacMainSource=flasher.generatePeacMain(ev);
-    fs.writeFileSync(path.join(flasher.targetPath,"peac_main.cpp"),peacMainSource);
+    let peakernelMainSource=flasher.generatePeakernelMain(ev);
+    fs.writeFileSync(path.join(flasher.targetPath,"peakernel_main.cpp"),peakernelMainSource);
 
     if (!dryRun) {
         await runCommand("pio",["run","--target","upload"],{cwd: flasher.targetPath});
