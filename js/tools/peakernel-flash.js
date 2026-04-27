@@ -8,6 +8,7 @@ import {escapeCString, unindent, autoIndent} from "../utils/lang-util.js";
 import JSON5 from "json5";
 import PeakernelBuildEvent from "./PeakernelBuildEvent.js";
 import {peakernelLoadHookChannel} from "./peakernel-commands.js";
+import {parse as iniParse} from "ini";
 
 let __dirname=dirnameFromImportMeta(import.meta);
 
@@ -16,9 +17,10 @@ class PeakernelFlasher {
         if (!port)
             throw new DeclaredError("No port specified.");
 
+        this.cwd=cwd;
         this.port=port;
-        this.cwd=packageDirname(cwd);
         this.targetPath=path.join(this.cwd,".target");
+        this.dryRun=dryRun;
     }
 
     generatePlatformioIni(ev) {
@@ -149,10 +151,19 @@ class PeakernelFlasher {
 }
 
 export async function peakernelFlash({cwd, port, dryRun}) {
-    let flasher=new PeakernelFlasher({cwd, port});
+    cwd=packageDirname(cwd);
+    console.log("cwd: "+cwd);
 
+    let flasher=new PeakernelFlasher({cwd, port, dryRun});
     let ev=await flasher.createBuildEvent();
-    fs.mkdirSync(flasher.targetPath,{recursive: true});
+
+    if (!fs.existsSync(path.join(cwd,"platformio.ini")))
+        throw new DeclaredError("No platformio.ini");
+
+    let ini=iniParse(fs.readFileSync(path.join(cwd,"platformio.ini"),"utf8"));
+    console.log(ini);
+
+    /*fs.mkdirSync(flasher.targetPath,{recursive: true});
 
     await peabind({
         idl: peabindMerge(ev.bindings.map(b=>flasher.loadJsonIfFilename(b))),
@@ -172,5 +183,5 @@ export async function peakernelFlash({cwd, port, dryRun}) {
 
     if (!dryRun) {
         await runCommand("pio",["run","--target","upload"],{cwd: flasher.targetPath});
-    }
+    }*/
 }

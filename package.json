@@ -23,6 +23,7 @@
     "console-table-without-index": "^0.1.1",
     "dotenv": "^17.4.2",
     "hook-channel": "^1.0.0",
+    "ini": "^6.0.0",
     "json5": "^2.2.3",
     "package-up": "^5.0.0",
     "peabind": "link:../peabind",
