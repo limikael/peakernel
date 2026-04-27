@@ -4,7 +4,7 @@ import path from "path";
 import fs from "fs";
 import {loadHookChannel, HookEvent} from "hook-channel";
 import {peabind, peabindMerge, peabindGetLibConf} from "peabind";
-import {escapeCString, unindent, autoIndent} from "../utils/lang-util.js";
+import {escapeCString, unindent, autoIndent, createIniContent} from "../utils/lang-util.js";
 import JSON5 from "json5";
 import PeakernelBuildEvent from "./PeakernelBuildEvent.js";
 import {peakernelLoadHookChannel} from "./peakernel-commands.js";
@@ -48,10 +48,46 @@ class PeakernelFlasher {
     }
 
     generatePlatformioIni(ev) {
-        let port=this.port;
-        let includeDirs=ev.includeDirs;
+        let platformioIni={
+            platformio: {
+                src_dir: "main"
+            },
+            "env:peakernel": {
+                ...ev.platformioIniItems,
+                board: "esp32-c3-devkitm-1",
+                build_unflags: [
+                    "-std=gnu++11",
+                    ...ev.buildUnflags
+                ],
+                build_flags: [
+                    "-std=c++17",
+                    "-DJS_STRICT_NAN_BOXING",
+                    "-DJS_NO_REGEXP",
+                    "-DJS_NO_MODULE_LOADER",
+                    "-DJS_NO_OS",
+                    `-DCONFIG_VERSION=\\"embedded\\"`,
+                    "-DEMSCRIPTEN",
+                    "-DJSVAL_TARGET_QUICKJS",
+                    ...ev.buildFlags,
+                    ...ev.includeDirs.map(i=>`-I${i}`),
+                    ...Object.entries(ev.defines).map(([k,v])=>v?`-D${k}=${v}`:`-D${k}`)
+                ],
+                monitor_speed: 115200,
+                upload_port: this.port,
+                monitor_port: this.port,
+            }
+        };
 
-        return unindent(`
+        if (ev.buildBackend!="cmake") {
+            platformioIni["env:peakernel"].build_src_filter=[
+                "-<*>",
+                ...ev.sources.map(d=>`+<${d}>`),
+            ];
+        }
+
+        return createIniContent(platformioIni);
+
+        /*return unindent(`
             [platformio]
             src_dir = main
             [env:peakernel]
@@ -75,7 +111,10 @@ class PeakernelFlasher {
             monitor_speed = 115200
             upload_port=${port}
             monitor_port=${port}
-        `+"\n");
+            build_src_filter =
+                -<*>
+                ${"\n"+ev.sources.map(d=>`${" ".repeat(16)}+<${d}>`).join("\n")}
+        `+"\n");*/
     }
 
     generateTopCMake(ev) {
@@ -202,9 +241,7 @@ export async function peakernelFlash({cwd, port, dryRun}) {
         fs.writeFileSync(path.join(flasher.targetPath,"main","CMakeLists.txt"),projectCmake);
     }
 
-    console.log("back: "+ev.buildBackend);
     if (ev.buildBackend=="platformio") {
-        console.log("*************");
         await flasher.createSrcExt(ev);
     }
 

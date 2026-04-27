@@ -54,3 +54,26 @@ export function autoIndent(text, indentSize=4) {
     
     return result.join('\n')+"\n";
 }
+
+export function createIniContent(sections) {
+    function generateItem(name, value) {
+        if (Array.isArray(value))
+            return `${name}=\n${value.map(v=>`  ${v}`).join("\n")}\n`;
+
+        return `${name}=${value}\n`;
+    }
+
+    function generateSection(name, items) {
+        let content=`[${name}]\n`;
+        for (let itemName in items)
+            content+=generateItem(itemName,items[itemName]);
+
+        return content;
+    }
+
+    let content="";
+    for (let name in sections)
+        content+=generateSection(name,sections[name]);
+
+    return content;
+}
