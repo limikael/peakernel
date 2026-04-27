@@ -1,12 +1,17 @@
 #include <cassert>
 #include <algorithm>
 #include "Timer.h"
-#ifdef ARDUINO
+
+#if defined(ARDUINO)
 #include <Arduino.h>
-#else
+#elif defined(ESP_PLATFORM)
+#include "esp_timer.h"
 static int millis() {
-    assert(0 && "millis not implemented");
+    int64_t ms=esp_timer_get_time()/1000;
+    return ms;
 }
+#else
+#error "Uknown platform"
 #endif
 
 static int nextTimerId=1;

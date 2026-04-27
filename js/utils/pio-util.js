@@ -5,7 +5,10 @@ export function pioParse(s) {
 	let res={};
 
 	for (let line of s.split("\n")) {
-		if (line.trim().startsWith("[")) {
+		if (line.trim().startsWith(';')) {
+		}
+
+		else if (line.trim().startsWith("[")) {
 			currentSection=line.trim().replace("[","").replace("]","");
 			currentKey=null;
 			res[currentSection]={};

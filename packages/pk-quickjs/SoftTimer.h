@@ -1,5 +1,8 @@
 #pragma once
+
+#ifdef ARDUINO
 #include <Arduino.h>
+#endif
 
 class SoftTimer {
 private:
@@ -8,18 +11,9 @@ private:
     bool firstRun;
     
 public:
-    // Constructor
     SoftTimer(unsigned long ms);
-    
-    // Main tick function - returns actual elapsed time if interval has passed
     unsigned long tick();
-    
-    // Reset the timer
     void reset();
-    
-    // Change interval dynamically
     void setInterval(unsigned long ms);
-    
-    // Check if interval has passed without resetting
-    bool expired() const;
+    //bool expired() const;
 };

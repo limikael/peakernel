@@ -1,5 +1,17 @@
 #include "SoftTimer.h"
 
+#if defined(ARDUINO)
+#include <Arduino.h>
+#elif defined(ESP_PLATFORM)
+#include "esp_timer.h"
+static int millis() {
+    int64_t ms=esp_timer_get_time()/1000;
+    return ms;
+}
+#else
+#error "Uknown platform"
+#endif
+
 // Constructor
 SoftTimer::SoftTimer(unsigned long ms) 
     : interval(ms), previous(0), firstRun(true) {
@@ -35,10 +47,4 @@ void SoftTimer::reset() {
 // Change interval dynamically
 void SoftTimer::setInterval(unsigned long ms) {
     interval = ms;
-}
-
-// Check if interval has passed without resetting
-bool SoftTimer::expired() const {
-    if (firstRun) return true; // Consider expired on first run
-    return (millis() - previous >= interval);
 }

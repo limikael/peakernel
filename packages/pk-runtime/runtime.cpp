@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include "runtime.h"
 #include "Timer.h"
 //#include "Fs.h"
@@ -7,7 +6,11 @@
 #include "encoding.h"
 
 void serialWriteString(std::string s) {
-    Serial.println(s.c_str());
+#if defined(ARDUINO)
+    Serial.printf("%s\n",s.c_str());
+#elif defined(ESP_PLATFORM)
+    printf("%s\n",s.c_str());
+#endif
 }
 
 void runtime_setup() {

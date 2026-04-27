@@ -12,44 +12,6 @@ import {pioParse, pioStringify, pioGetEnvNames, pioGetEnv, pioEnvNormalize} from
 
 let __dirname=dirnameFromImportMeta(import.meta);
 
-/*
-    generateCmake() {
-        let topCmakeContent=unindent(`
-            cmake_minimum_required(VERSION 3.16)
-            include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-            project(peakernel)            
-        `);
-        fs.writeFileSync(path.join(this.targetPath,"CMakeLists.txt"),topCmakeContent);
-
-        fs.mkdirSync(path.join(this.targetPath,"main"),{recursive: true});
-        let sources=[];
-        for (let source of this.sources) {
-            let stats=fs.statSync(source);
-
-            if (stats.isFile()) {
-                sources.push(source);
-            }
-
-            else {
-                for (let entry of fs.readdirSync(source))
-                    if (entry.endsWith(".c") || entry.endsWith(".cpp"))
-                        sources.push(path.join(source,entry));
-            }
-        }
-
-        let projectCmakeContent=autoIndent(`
-            idf_component_register(
-                SRCS
-                    ${sources.map(d=>`"${d}"\n`).join("\n")}
-                INCLUDE_DIRS
-                    ${this.includeDirs.map(d=>`"${d}"\n`).join("\n")}
-            )
-        `);
-
-        fs.writeFileSync(path.join(this.targetPath,"main","CMakeLists.txt"),projectCmakeContent);
-    }
-*/
-
 class PeakernelFlasher {
     constructor({cwd, port, dryRun}) {
         if (!port)
@@ -85,6 +47,42 @@ class PeakernelFlasher {
         sources.push(path.join(this.targetPath,"src-ext"));
 
         ev.sources=sources;
+    }
+
+    generateCmake(ev) {
+        let topCmakeContent=unindent(`
+            cmake_minimum_required(VERSION 3.16)
+            include($ENV{IDF_PATH}/tools/cmake/project.cmake)
+            project(peakernel)            
+        `);
+        fs.writeFileSync(path.join(this.targetPath,"CMakeLists.txt"),topCmakeContent);
+
+        fs.mkdirSync(path.join(this.targetPath,"src"),{recursive: true});
+        let sources=[];
+        for (let source of ev.sources) {
+            let stats=fs.statSync(source);
+
+            if (stats.isFile()) {
+                sources.push(source);
+            }
+
+            else {
+                for (let entry of fs.readdirSync(source))
+                    if (entry.endsWith(".c") || entry.endsWith(".cpp"))
+                        sources.push(path.join(source,entry));
+            }
+        }
+
+        let projectCmakeContent=autoIndent(`
+            idf_component_register(
+                SRCS
+                    ${sources.map(d=>`"${d}"\n`).join("\n")}
+                INCLUDE_DIRS
+                    ${ev.includeDirs.map(d=>`"${d}"\n`).join("\n")}
+            )
+        `);
+
+        fs.writeFileSync(path.join(this.targetPath,"src","CMakeLists.txt"),projectCmakeContent);
     }
 
     generatePlatformioIni(ev) {
@@ -129,6 +127,10 @@ class PeakernelFlasher {
 
             case "espidf":
                 ev.addSource(path.join(__dirname,"../../src/main-espidf.cpp"));
+                this.generateCmake(ev);
+                env.build_unflags.push("-Werror=all");
+                env.build_flags.push("-Wno-error=incompatible-pointer-types");
+                env.build_flags.push("-fpermissive");
                 break;
 
             default:

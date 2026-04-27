@@ -1,4 +1,5 @@
 #include "SoftTimer.h"
+#include <string>
 
 extern "C" {
 #include "quickjs.h"

@@ -87,8 +87,14 @@ void QuickjsEngine::loop() {
 	}
 
 	if (warningTimer.tick()) {
-		if (errorMessage!="")
+		if (errorMessage!="") {
+#if defined(ARDUINO)
 			Serial.printf("%s\n",errorMessage.c_str());
+#elif defined(ESP_PLATFORM)
+			printf("%s\n",errorMessage.c_str());
+#endif
+
+		}
 	}
 }
 
