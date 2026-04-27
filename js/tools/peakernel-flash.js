@@ -127,6 +127,10 @@ class PeakernelFlasher {
                 ]);
                 break;
 
+            case "espidf":
+                ev.addSource(path.join(__dirname,"../../src/main-espidf.cpp"));
+                break;
+
             default:
                 throw new DeclaredError("Unknown framework: "+env.framework);
         }
