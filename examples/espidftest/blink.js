@@ -1,5 +1,8 @@
+pinMode(8,"output");
+
 setInterval(()=>{
 	console.log("hello from blink");
+	digitalWrite(8,!digitalRead(8));
 },1000);
 
 /*pinMode(8,"output");

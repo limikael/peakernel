@@ -7,9 +7,6 @@
   "disablePlugins": [
     "pk-info",
     "pk-littlefs",
-    "pk-repl",
-    "pk-serial-console",
-    "pk-vfs",
-    "pk-gpio"
+    "pk-repl"
   ]
 }

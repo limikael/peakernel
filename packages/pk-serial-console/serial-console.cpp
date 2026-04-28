@@ -1,3 +1,7 @@
+#ifndef ARDUINO
+#error "Serial console only works for the arduino platform for now"
+#endif
+
 #include <Arduino.h>
 #include "Fs.h"
 #include "serial-console.h"

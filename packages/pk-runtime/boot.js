@@ -22,15 +22,17 @@ if (globalThis.Fs) {
 	globalThis.fs=Fs.getInstance();
 
 	let devConsole=fs.open("/dev/console","doesn't matter");
-	globalThis.console={};
-	globalThis.console.log=s=>{
-		let bytes=encodeAscii(s+"\n");
-	    if (devConsole)
-	    	devConsole.write(bytes);
+	if (devConsole) {
+		globalThis.console={};
+		globalThis.console.log=s=>{
+			let bytes=encodeAscii(s+"\n");
+		    if (devConsole)
+		    	devConsole.write(bytes);
+		}
 	}
 }
 
-else {
+if (!globalThis.console) {
 	globalThis.console={};
 	globalThis.console.log=serialWriteString;
 }
