@@ -8,16 +8,16 @@ import JSON5 from "json5";
 import PeakernelBuildEvent from "./PeakernelBuildEvent.js";
 import {pioParse, pioStringify, pioGetEnvNames, pioGetEnv, pioEnvNormalize} from "../utils/pio-util.js";
 import {Command, Option, program} from "commander";
-import {attachEventCommand} from "../utils/commander-util.js";
+import {chainAttachCommanderCommand} from "chain-import";
 
 let __dirname=dirnameFromImportMeta(import.meta);
 
 class PeakernelFlasher {
-    constructor({cwd, port, dryRun, project}) {
+    constructor({cwd, port, dryRun, chain}) {
         if (!port)
             throw new DeclaredError("No port specified.");
 
-        this.project=project;
+        this.chain=chain;
         this.cwd=cwd;
         this.port=port;
         this.targetPath=path.join(this.cwd,".target");
@@ -144,7 +144,7 @@ class PeakernelFlasher {
 
     async createBuildEvent() {
         let ev=new PeakernelBuildEvent();
-        await this.project.build(ev);
+        await this.chain.build(ev);
 
         ev.addIncludeDir(this.targetPath);
         ev.addIncludeDir(path.join(__dirname,"../../src"));
@@ -218,14 +218,14 @@ class PeakernelFlasher {
     }
 }
 
-export async function flash({cwd, port, dryRun, args, main, project}) {
+export async function flash({cwd, port, dryRun, args, main, chain}) {
     if (args[0])
         main=args[0];
 
     else if (main)
         main=path.resolve(cwd,main);
 
-    let flasher=new PeakernelFlasher({cwd, port, dryRun, project});
+    let flasher=new PeakernelFlasher({cwd, port, dryRun, chain});
     let ev=await flasher.createBuildEvent();
 
     if (!fs.existsSync(path.join(cwd,"platformio.ini")))
@@ -257,8 +257,8 @@ export async function flash({cwd, port, dryRun, args, main, project}) {
     }
 }
 
-export async function configCli(program, project) {
-    attachEventCommand(program,project,"flash")
+export async function configCli({chain, program}) {
+    chainAttachCommanderCommand(chain,program,"flash")
         .description("Compile and flash firmware.")
         .argument('[file]', 'Main file.')
         .addOption(new Option("-m, --main <file>","Main file.").env("PEAKERNEL_MAIN"))

@@ -6,7 +6,7 @@ import path from "path";
 
 loadProjectEnv();
 let cwd=getProjectCwd();
-let project=await peakernelLoad({cwd});
+let chain=await peakernelLoad({cwd});
 
 program
     .name('peakernel')
@@ -14,7 +14,7 @@ program
     .option("--cwd <cwd>","Project dir.",cwd)
     .addOption(new Option("-p, --port <port>","How to reach the MCU.").env("PEAKERNEL_PORT"))
 
-await project.configCli(program,project);
+await chain.configCli({chain, program});
 
 try {
     await program.parseAsync(process.argv);

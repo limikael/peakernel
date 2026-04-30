@@ -1,8 +1,5 @@
-import {loadHookChannel, HookEvent} from "hook-channel";
-
-export default class PeakernelBuildEvent extends HookEvent {
+export default class PeakernelBuildEvent {
     constructor() {
-        super("build");
         this.bindings=[];
         this.bootContent="";
         this.sources=[];

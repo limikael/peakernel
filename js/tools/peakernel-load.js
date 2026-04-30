@@ -1,4 +1,4 @@
-import {importChannel} from "hook-channel";
+import {chainImport} from "chain-import";
 import {arrayify} from "../utils/js-util.js";
 import {dirnameFromImportMeta} from "../utils/node-util.js";
 import path from "path";
@@ -13,7 +13,7 @@ export async function peakernelLoad({cwd, extraModuleDirs, extraModules}) {
 	];
 	extraModuleDirs=[...arrayify(extraModuleDirs), path.join(__dirname,"../../packages")];
 
-	return await importChannel({
+	return await chainImport({
 	    cwd,
 	    extraModules,
 	    extraModuleDirs,

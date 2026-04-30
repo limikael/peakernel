@@ -7,7 +7,7 @@ import fs, {promises as fsp} from "fs";
 import {DeclaredError} from "../utils/js-util.js";
 import {pioStringify} from "../utils/pio-util.js";
 import {Command, Option, program} from "commander";
-import {attachEventCommand} from "../utils/commander-util.js";
+import {chainAttachCommanderCommand, chainList, chainEnable, chainDisable} from "chain-import";
 
 let __dirname=dirnameFromImportMeta(import.meta);
 
@@ -57,14 +57,12 @@ export async function init() {
     fs.writeFileSync(path.join(cwd,"platformio.ini"),pioStringify(ini));
 }
 
-export async function lsmod({cwd}) {
-    let moduleViews=this.getModules().map(m=>({
-        Name: m.getName(),
-        Description: m.getDescription(),
-        Enabled: m.isEnabled(),
-    }));
+export async function lsmod({chain, cwd, short}) {
+    if (short)
+        console.log((await chainList(chain)).map(m=>m.name).join(" "));
 
-    table(moduleViews);
+    else
+        table(await chainList(chain));
 }
 
 export async function stop({port}) {
@@ -80,39 +78,42 @@ export async function start({port}) {
     await device.close();
 }
 
-export async function enable({args, project}) {
-    await project.enablePlugin(args[0]);
+export async function enable({chain, args}) {
+    for (let a of args)
+        await chainEnable(chain,a);
 }
 
-export async function disable({args, project}) {
-    await project.disablePlugin(args[0]);
+export async function disable({chain, args}) {
+    for (let a of args)
+        await chainDisable(chain,a);
 }
 
-export async function configCli(program, project) {
-    attachEventCommand(program,project,"cat")
+export async function configCli({chain, program}) {
+    chainAttachCommanderCommand(chain,program,"cat")
         .description("Print remote file.")
         .argument('<file>', 'File to print.');
 
-    attachEventCommand(program,project,"monitor")
+    chainAttachCommanderCommand(chain,program,"monitor")
         .description("Open monitor.");
 
-    attachEventCommand(program,project,"init")
+    chainAttachCommanderCommand(chain,program,"init")
         .description("Create peakernel project in current dir.");
 
-    attachEventCommand(program,project,"lsmod")
+    chainAttachCommanderCommand(chain,program,"lsmod")
+        .option("--short, -s","Just list names")
         .description("List plugin modules.");
 
-    attachEventCommand(program,project,"enable")
+    chainAttachCommanderCommand(chain,program,"enable")
         .description("Enable plugin.")
-        .argument('<name>', 'Plugin name.');
+        .argument('<name...>', 'Plugin name.');
 
-    attachEventCommand(program,project,"disable")
+    chainAttachCommanderCommand(chain,program,"disable")
         .description("Disable plugin.")
-        .argument('<name>', 'Plugin name.');
+        .argument('<name...>', 'Plugin name.');
 
-    attachEventCommand(program,project,"start")
+    chainAttachCommanderCommand(chain,program,"start")
         .description("Start the current program.");
 
-    attachEventCommand(program,project,"stop")
+    chainAttachCommanderCommand(chain,program,"stop")
         .description("Stop the current program.");
 }

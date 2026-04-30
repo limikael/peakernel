@@ -1,5 +1,5 @@
 import {dirnameFromImportMeta} from "../../js/utils/node-util.js";
-import {attachEventCommand} from "../../js/utils/commander-util.js";
+import {chainAttachCommanderCommand} from "chain-import";
 import {createDevice} from "../../js/device/Device.js";
 import path from "path";
 
@@ -21,8 +21,8 @@ export async function peakernelInfo({cwd, port}) {
     await device.close();
 }
 
-export async function configCli(program, project) {
-    attachEventCommand(program,project,"info")
+export async function configCli({chain, program}) {
+    chainAttachCommanderCommand(chain,program,"info")
         .description("Show runtime info.");
 }
 

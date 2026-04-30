@@ -1,6 +1,6 @@
 import { dirnameFromImportMeta } from "../../js/utils/node-util.js";
 import {Command, Option, program} from "commander";
-import {attachEventCommand} from "../../js/utils/commander-util.js";
+import {chainAttachCommanderCommand} from "chain-import";
 import {createDevice} from "../../js/device/Device.js";
 import path from "path";
 import fs, {promises as fsp} from "fs";
@@ -40,8 +40,8 @@ export async function flash({cwd, port, args, main}) {
     deploy({cwd, port, args, main});
 }
 
-export async function configCli(program, project) {
-    attachEventCommand(program,project,"deploy")
+export async function configCli({chain, program}) {
+    chainAttachCommanderCommand(chain,program,"deploy")
         .description("Deploy program.")
         .argument('[file]', 'Main file.')
         .addOption(new Option("-m, --main <file>","Main file.").env("PEAKERNEL_MAIN"));
