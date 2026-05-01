@@ -28,11 +28,13 @@ export async function monitor({cwd, port}) {
 }
 
 export async function init() {
+    console.log("Init peakernel project...");
+
     let cwd=process.cwd();
 
     let packageJsonPath=path.join(cwd,"package.json");
     if (fs.existsSync(packageJsonPath))
-        throw new DeclaredError("package.json already exists");
+        throw new DeclaredError("package.json already exists (peakernel)");
 
     let peakernelPkg=JSON.parse(fs.readFileSync(path.join(__dirname,"../../package.json")));
     let pkg={

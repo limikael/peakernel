@@ -1,4 +1,4 @@
-import {chainImport} from "chain-import";
+import {chainImport, chainSetContract} from "chain-import";
 import {arrayify} from "../utils/js-util.js";
 import {dirnameFromImportMeta} from "../utils/node-util.js";
 import path from "path";
@@ -6,7 +6,9 @@ import path from "path";
 let __dirname=dirnameFromImportMeta(import.meta);
 
 export async function peakernelLoad({cwd, roots, internal}) {
-	return await chainImport({
+	//console.log("load");
+
+	let chain=await chainImport({
 	    cwd,
 	    roots: [path.join(__dirname,"../.."), ...arrayify(roots)],
 	    keyword: "peakernel-plugin",
@@ -18,4 +20,8 @@ export async function peakernelLoad({cwd, roots, internal}) {
 	    internalKey: "internal",
 	    internal: ["peakernel",...arrayify(internal)]
 	});
+
+	chainSetContract(chain,"init","first-defined");
+
+	return chain;
 }

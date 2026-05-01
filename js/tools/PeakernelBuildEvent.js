@@ -12,6 +12,11 @@ export default class PeakernelBuildEvent {
         this.defines={};
         this.externalBootFile=false;
         this.libDeps=[];
+        this.board="";
+    }
+
+    setBoard(b) {
+        this.board=b;
     }
 
     addLibDep(libDep) {

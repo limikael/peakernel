@@ -114,6 +114,9 @@ class PeakernelFlasher {
         if (this.board)
             env.board=this.board;
 
+        if (ev.board)
+            env.board=ev.board;
+
         if (!env.board)
             throw new DeclaredError("No board selected (pass on the cmd line, or set in .env");
 

@@ -20,19 +20,21 @@
     "peakernel": "./js/tools/peakernel-cli.js"
   },
   "type": "module",
-  "keywords": ["peakernel-plugin"],
+  "keywords": [
+    "peakernel-plugin"
+  ],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.28.2",
   "dependencies": {
     "@serialport/parser-readline": "^13.0.0",
+    "chain-import": "^1.0.4",
     "commander": "^14.0.3",
     "console-table-without-index": "^0.1.1",
     "dotenv": "^17.4.2",
-    "chain-import": "^1.0.4",
     "json5": "^2.2.3",
     "package-up": "^5.0.0",
-    "peabind": "link:../peabind",
+    "peabind": "^1.0.1",
     "serialport": "^13.0.0"
   },
   "devDependencies": {
