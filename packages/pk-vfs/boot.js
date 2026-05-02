@@ -69,23 +69,33 @@ function fileClose(fid) {
 }
 
 function readFile(pathname) {
-	return new Promise((resolve, reject)=>{
-		let fh=Fs.getInstance().open(pathname,"r");
+	return new Promise((resolve, reject) => {
+		let fh = Fs.getInstance().open(pathname, "r");
 		if (!fh)
-			reject(new Error("unable to open file"));
+			return reject(new Error("unable to open file"));
 
-		let data=new Uint8Array();
-		fh.on("data",chunk=>{
-			//console.log("read chunk: "+chunk.length);
-			let newData=new Uint8Array(data.length+chunk.length);
-			newData.set(data,0);
-			newData.set(chunk,data.length);
-			data=newData;
+		let chunks = [];
+		let totalLength = 0;
+
+		fh.on("data", chunk => {
+			// store chunk, no copying
+			chunks.push(chunk);
+			totalLength += chunk.length;
 		});
 
-		fh.on("close",()=>{
-			//console.log("closing...");
+		fh.on("close", () => {
 			fh.close();
+
+			// single allocation
+			let data = new Uint8Array(totalLength);
+
+			// single pass copy
+			let offset = 0;
+			for (const chunk of chunks) {
+				data.set(chunk, offset);
+				offset += chunk.length;
+			}
+
 			resolve(data);
 		});
 	});
