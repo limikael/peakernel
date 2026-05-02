@@ -14,7 +14,7 @@ import {chainAttachCommanderCommand} from "chain-import";
 let __dirname=dirnameFromImportMeta(import.meta);
 
 class PeakernelFlasher {
-    constructor({cwd, port, dryRun, chain, board}) {
+    constructor({cwd, port, dryRun, chain, board, targetDir}) {
         if (!port)
             throw new DeclaredError("No port specified.");
 
@@ -24,7 +24,10 @@ class PeakernelFlasher {
         this.port=port;
         this.dryRun=dryRun;
 
-        if (this.cwd)
+        if (targetDir)
+            this.targetPath=targetDir;
+
+        else if (this.cwd)
             this.targetPath=path.join(this.cwd,".target");
 
         else
@@ -251,14 +254,14 @@ class PeakernelFlasher {
     }
 }
 
-export async function flash({cwd, port, dryRun, args, main, chain, board}) {
+export async function flash({cwd, port, dryRun, args, main, chain, board, targetDir}) {
     if (args[0])
         main=args[0];
 
     else if (main)
         main=path.resolve(cwd,main);
 
-    let flasher=new PeakernelFlasher({cwd, port, dryRun, chain, board});
+    let flasher=new PeakernelFlasher({cwd, port, dryRun, chain, board, targetDir});
     let ev=await flasher.createBuildEvent();
 
     /*if (!fs.existsSync(path.join(cwd,"platformio.ini")))

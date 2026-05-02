@@ -140,5 +140,6 @@ export async function configCli({chain, program}) {
         .argument('[file]', 'Main file.')
         .addOption(new Option("-m, --main <file>","Main file.").env("PEAKERNEL_MAIN"))
         .addOption(new Option("-b, --board <board>","Target board.").env("PEAKERNEL_BOARD"))
+        .addOption(new Option("--target-dir <dir>","Temporary project target dir.").env("PEAKERNEL_TARGET_DIR"))
         .option("--dry-run","Just build, don't flash.");
 }
