@@ -15,7 +15,7 @@ void setup() {
 	xTaskCreatePinnedToCore(
         myTask,
         "myTask",
-        16384,     // stack in words (not bytes!)
+        16384,
         nullptr,
         1,
         nullptr,

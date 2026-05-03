@@ -15,12 +15,14 @@ QuickjsEngine::QuickjsEngine(const char *boot_)
 void QuickjsEngine::setup() {
 #ifdef PEAC_INFO
 	InfoCollector::getInstance()->collectEvent.on([this](std::shared_ptr<InfoRecord> record) {
+		UBaseType_t hw = uxTaskGetStackHighWaterMark(NULL);
 		multi_heap_info_t info;
 		heap_caps_get_info(&info, MALLOC_CAP_DEFAULT);
 		record->setInt("totalHeap",info.total_free_bytes+info.total_allocated_bytes);
 		record->setInt("totalUsed",info.total_allocated_bytes);
 		record->setInt("totalFree",info.total_free_bytes);
-		record->setInt("minimumFreeBytes",info.minimum_free_bytes);
+		record->setInt("minFreeBytes",info.minimum_free_bytes);
+		record->setInt("minStackWords",hw);
 		record->setInt("largestBlock",info.largest_free_block);
 		record->setInt("freeBlocks",info.free_blocks);
 		record->setInt("liveObjects",pk_bindings_get_num_objects());
