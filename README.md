@@ -162,20 +162,6 @@ npm run deploy   # fast iteration (<1s)
 peakernel monitor # REPL
 ```
 
-## Architecture (high level)
-
-```
-CLI
-  ↓
-Transport (serial / TCP / cloud)
-  ↓
-JSON-RPC
-  ↓
-Device runtime (JS engine)
-  ↓
-Plugins (firmware + APIs)
-```
-
 ## What makes peakernel different?
 
 * No fixed SDK
@@ -185,12 +171,6 @@ Plugins (firmware + APIs)
 Instead:
 
 > **Everything is a plugin.**
-
-## Vision
-
-* Hardware capabilities installable via npm
-* Devices accessible locally or remotely with the same commands
-* One system for firmware, runtime, CLI, and automation
 
 ## Microcontroller Dev Stack Comparison
 
@@ -210,8 +190,10 @@ Instead:
 | **Native extensions**             | Possible, uncommon          | Limited             | Supported             | First-class (C++ plugins via npm)        |
 | **Extending hardware**            | Firmware rebuild            | Firmware changes    | Native modules        | `npm install` plugin + flash             |
 | **Project structure**             | Script-based                | Script-based        | Structured SDK        | Structured, build-based                  |
-| **Scaling projects**              | Can get messy               | Can get messy       |                       |                                          |
-
+| **Scaling projects**              | Can get messy               | Can get messy       | Good                  | Strong + lightweight                     |
+| **Tooling ecosystem**             | Simple                      | Minimal             | Custom tooling        | Full JS tooling (bundler, linting, etc.) |
+| **Artifact produced**             | Scripts                     | Scripts/tokenized   | Firmware image        | Single bundled program                   |
+| **Philosophy**                    | Scripting                   | Scripting           | Platform/SDK          | Build system for firmware                |
 
 ## Related
 
