@@ -1,6 +1,6 @@
 # Peakernel
 
-Peakernel compiles your JavaScript into a compact bytecode firmware for microcontrollers. You work locally - save a file, and within a second your device runs the updated bundle. Because everything is resolved at build time, there are no dynamic imports or runtime surprises, just a predictable system running exactly what you built. Native C++ plugins extend hardware capabilities like dependencies, giving you a workflow that feels as immediate as CircuitPython, but scales into something far more structured and reliable.
+Peakernel compiles your JavaScript into a compact bytecode firmware for microcontrollers. You work locally - save a file, and within a second your device runs the updated bundle. Because everything is resolved at build time, there are no dynamic imports or runtime surprises, just a predictable system running exactly what you built. Native C++ plugins extend hardware capabilities like dependencies, giving you a workflow that feels as immediate as CircuitPython, but scales in a more structured way thanks to the NPM ecosystem.
 
 ## Why Peakernel?
 
