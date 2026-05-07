@@ -3,9 +3,10 @@
 test:
 	rm -f test/*.out.*
 	peabind -tquickjs packages/pk-vfs/bindings.json packages/pk-runtime/bindings.json -otest/pk_bindings.out.cpp -ppk_bindings_
-	wrapcc -std=c++20 \
+	wrapcc g++ -std=c++20 \
 		-o bin/testmain \
 		test/*.cpp \
+		packages/pk-runtime/runtime.cpp \
 		packages/pk-runtime/encoding.cpp \
 		packages/pk-runtime/Timer.cpp \
 		packages/pk-info/InfoRecord.cpp \

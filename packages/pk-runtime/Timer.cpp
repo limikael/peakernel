@@ -11,7 +11,10 @@ static int millis() {
     return ms;
 }
 #else
-#error "Uknown platform"
+#warning "Uknown platform"
+static int millis() {
+    return 0;
+}
 #endif
 
 static int nextTimerId=1;
