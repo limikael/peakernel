@@ -1,6 +1,6 @@
 todo:
 
-- kisch astar algo
+x kisch astar algo
 - design boards
 
 - VFS rm/readdir/stat/mkdir
