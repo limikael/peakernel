@@ -29,7 +29,7 @@ void QuickjsEngine::setup() {
 		record->setInt("numListeners",pk_bindings_get_num_listeners());
 		record->setString("bootError",errorMessage);
 
-		if (errorMessage!="")
+		if (errorMessage!="" && !bootComplete)
 			record->setString("state","error");
 
 		else if (!running)
@@ -94,8 +94,8 @@ void QuickjsEngine::loop() {
 	jsvalQuickjsRunJobs();
 
 	if (jsvalHasException()) {
-		std::string ex=jsvalCatchExceptionStdString();
-		Serial.printf("Top level: %s\n",ex.c_str());
+		errorMessage=jsvalCatchExceptionStdString();
+		Serial.printf("Top level: %s\n",errorMessage.c_str());
 	}
 
 	if (gcTimer.tick()) {
@@ -103,7 +103,7 @@ void QuickjsEngine::loop() {
 	}
 
 	if (warningTimer.tick()) {
-		if (errorMessage!="") {
+		if (errorMessage!="" && !bootComplete) {
 #if defined(ARDUINO)
 			Serial.printf("%s\n",errorMessage.c_str());
 #elif defined(ESP_PLATFORM)
