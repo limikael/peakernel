@@ -1,19 +1,21 @@
 todo:
 
-x kisch astar algo
 - design boards
 
+x kisch astar algo
+x seen device ids
+
+- promises (move stuff to C++ from fid pased read)
+- top level promise rejections
+- wasm boxing of numbers
 - VFS rm/readdir/stat/mkdir
+
 - w/o Arduino, i.e. esp-idf... idf build
 - mquickjs
-- promises (move stuff to C++ from fid pased read)
 - bytecode compile
 - commands and shell (exec)
-- top level promise rejections
 - networking
 - canopener completness, test with python
-- seen device ids
-- wasm boxing of numbers
 
 backlog:
 - PEABIND_AUTO_INCLUDE ?
