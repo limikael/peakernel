@@ -1,5 +1,6 @@
 #include "runtime.h"
 #include "Timer.h"
+#include "Sys.h"
 //#include "Fs.h"
 #include <cassert>
 #include "encoding.h"
@@ -41,12 +42,16 @@ void runtime_setup() {
         f->write(encodeAscii("hello world"));
         f->close();
     });*/
+
+    Sys::getInstance()->setup();
 }
 
 void runtime_start() {
+    Sys::getInstance()->start();
 }
 
 void runtime_loop() {
+    Sys::getInstance()->loop();
 	Timer::loop();
 }
 

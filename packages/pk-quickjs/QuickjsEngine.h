@@ -3,10 +3,10 @@
 
 extern "C" {
 #include "quickjs.h"
-void scheduleRestart(bool run);
 void gc();
-void bootResolve();
-void bootReject(std::string message);
+//void scheduleRestart(bool run);
+/*void bootResolve();
+void bootReject(std::string message);*/
 }
 
 class QuickjsEngine {
@@ -16,16 +16,16 @@ public:
 	void begin();
 	void close();
 	void loop();
-	void setRunning(bool running_) { running=running_; }
+	//void setRunning(bool running_) { running=running_; }
 	void runBootScript();
 	void gc();
-	void bootResolve();
-	void bootReject(std::string message);
+	/*void bootResolve();
+	void bootReject(std::string message);*/
 
 private:
-	bool running=true,bootComplete=false;
-	std::string errorMessage;
-	SoftTimer warningTimer;
+	//bool running=true;/*,bootComplete=false;*/
+	//std::string errorMessage;
+	//SoftTimer warningTimer;
 	SoftTimer gcTimer;
 	JSContext *ctx=nullptr;
 	const char *boot;

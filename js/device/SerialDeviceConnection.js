@@ -20,6 +20,8 @@ export class SerialDeviceConnection extends EventEmitter {
 		this.pending = new Map();
 
 		this.parser.on('data', (line) => {
+			//console.log("line: "+line);
+
 			line=line.trim().replace(/^>+|>+$/g, '').replace("\u001b","").trim();
 			//console.log("processing: "+line);
 

@@ -1,5 +1,5 @@
 {
-	"include": ["runtime.h","Timer.h","encoding.h"],
+	"include": ["runtime.h","Timer.h","encoding.h","Sys.h"],
 	"classes": {
 		"Timer": {
 			"methods": {
@@ -9,6 +9,17 @@
 				"timer": {}
 			}
 		},
+		"Sys": {
+			"constructible": false,
+			"methods": {
+				"getInstance": {"return": "Sys", "static": true},
+				"awaitBoot": {"return": {"type": "void", "promise": true}},
+				"notifyBootComplete": {},
+				"notifyError": {"args": ["string"]},
+				"scheduleRestart": {"args": ["int"]},
+				"shouldRunUserCode": {"return": "int"}
+			}
+		}
 	},
 	"functions": {
 		"createTimeout": {"args": ["int"], "return": "Timer"},

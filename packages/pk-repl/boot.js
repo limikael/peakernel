@@ -18,10 +18,12 @@ class Repl {
     }
 
     writeMessage(o) {
-        this.writeString("\u001b"+JSON.stringify(o)+"\n");
+        this.writeString("\n\n\u001b"+JSON.stringify(o)+"\n\n");
     }
 
     async runMessageLine(line) {
+        //console.log("** running message line..");
+
         let messageId;
         try {
             let message=JSON.parse(line);
@@ -29,6 +31,7 @@ class Repl {
             let res=this.model[message.method](...message.params);
             if (res && typeof res=="object" && res.then)
                 res=await res;
+
             this.writeMessage({
                 id: message.id,
                 result: res
@@ -36,6 +39,7 @@ class Repl {
         }
 
         catch (e) {
+            //this.writeString("\n"); //\n\n");
             this.writeMessage({
                 id: messageId,
                 error: {
@@ -99,6 +103,9 @@ class Repl {
 function installRepl(serial) {
     globalThis.__repl=new Repl(serial,globalThis);
 }
+
+/*if (globalThis.devConsole)
+    installRepl(globalThis.devConsole);*/
 
 if (globalThis.Fs)
     installRepl(Fs.getInstance().open("/dev/console","rw"));

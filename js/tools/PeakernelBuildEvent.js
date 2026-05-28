@@ -3,7 +3,6 @@ import fs from "node:fs";
 export default class PeakernelBuildEvent {
     constructor() {
         this.bindings=[];
-        this.bootContent="";
         this.sources=[];
         this.includeDirs=[];
         this.bootFiles=[];

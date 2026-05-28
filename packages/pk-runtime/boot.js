@@ -37,33 +37,31 @@ if (!globalThis.console) {
 	globalThis.console.log=serialWriteString;
 }
 
-globalThis.bootPromise=new Promise((res,rej)=>{
-	globalThis.bootPromiseResolve=res;
-	globalThis.bootPromiseReject=rej;
-});
-
 async function boot() {
 	try {
-		if (globalThis.bootFunction)
-			await globalThis.bootFunction();
+		if (Sys.getInstance().shouldRunUserCode()) {
+			if (globalThis.bootFunction)
+				await globalThis.bootFunction();
 
-		else {
-			//gc();
-			let bootBuffer=await readFile("/boot.js");
-			let bootContent=decodeAscii(bootBuffer);
-			await eval(bootContent);
+			else {
+				let bootBuffer=await readFile("/boot.js");
+				let bootContent=decodeAscii(bootBuffer);
+				await eval(bootContent);
+			}
 		}
 
-		globalThis.bootPromiseResolve();
-		bootResolve();
+		Sys.getInstance().notifyBootComplete();
 	}
 
 	catch (e) {
-		globalThis.bootPromiseReject(e);
-		bootReject(e.message);
+		Sys.getInstance().notifyError(e.message);
 	}
 }
 
 async function awaitBoot() {
-	await bootPromise;
+	await Sys.getInstance().awaitBoot();
+}
+
+function scheduleRestart(normal) {
+	Sys.getInstance().scheduleRestart(normal);
 }

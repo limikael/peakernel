@@ -3,10 +3,11 @@
 #include "esp_heap_caps.h"
 
 void myTask(void *arg) {
-    peakernel_setup();
+    peakernel_notify_setup();
+    peakernel_notify_start();
     for (;;) {
         taskYIELD();
-		peakernel_loop();
+		peakernel_notify_loop();
 	}
 }
 

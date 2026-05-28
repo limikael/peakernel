@@ -9,6 +9,7 @@ export function build(ev) {
     ev.addSource(__dirname, ".");
     ev.addIncludeDir(__dirname);
     ev.addDefine("PEAC_INFO");
+    ev.addDefine("PEAKERNEL_INFO");
     ev.addBinding(path.join(__dirname,"bindings.json"));
     ev.addBootFile(path.join(__dirname,"boot.js"));
 }

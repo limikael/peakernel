@@ -188,7 +188,7 @@ class PeakernelFlasher {
         ev.addIncludeDir(this.targetPath);
         ev.addIncludeDir(path.join(__dirname,"../../src"));
         ev.addSource(this.targetPath);
-        ev.addSource(path.join(__dirname,"../../src/peakernel.cpp"));
+        //ev.addSource(path.join(__dirname,"../../src/peakernel.cpp"));
 
         ev.addIncludeDir(peabindGetLibConf("includeDir"));
         ev.addIncludeDir(path.join(__dirname,"../../vendor/quickjs"));
@@ -243,7 +243,7 @@ class PeakernelFlasher {
     }
 
     async generateBootContent(ev) {
-        let mainContent="";
+        let bootfunctionContent="";
 
         if (!await this.chain.canBootFromFile()) {
             let deployFile=resolveDeployFile({cwd: this.cwd, main: this.main, args: this.args});
@@ -252,14 +252,13 @@ class PeakernelFlasher {
                 let bundler=new PeakernelBundler({cwd: this.cwd, chain: this.chain, main: deployFile});
                 let bundleContent=await bundler.getBundleAiife();
                 console.log("Bundle: "+bundleContent.length+" bytes");
-                mainContent=`globalThis.bootFunction=()=>${bundleContent};`;
+                bootfunctionContent=`globalThis.bootFunction=()=>${bundleContent};`;
             }
         }
 
         let content=`
-            ${ev.bootContent}
+            ${bootfunctionContent}
             ${await ev.getBootContent()}
-            ${mainContent}
         `;
 
         return `const char boot_js[]="${escapeCString(content)}";`;
