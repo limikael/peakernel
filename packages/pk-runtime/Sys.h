@@ -13,6 +13,8 @@ public:
 	static std::shared_ptr<Sys> getInstance();
 	void scheduleRestart(bool normal);
 	bool shouldRunUserCode();
+	bool isBootComplete();
+	Dispatcher<> bootCompleteEvent;
 
 private:
     enum RunTarget {

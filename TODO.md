@@ -4,9 +4,9 @@ todo:
 
 x kisch astar algo
 x seen device ids
+- top level promise rejections
 
 - promises (move stuff to C++ from fid pased read)
-- top level promise rejections
 - wasm boxing of numbers
 - VFS rm/readdir/stat/mkdir
 

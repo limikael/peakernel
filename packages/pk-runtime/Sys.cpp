@@ -58,7 +58,11 @@ VoidPromise Sys::awaitBoot() {
 }
 
 void Sys::notifyBootComplete() {
+	if (bootPromise.isSettled())
+		return;
+
 	bootPromise.resolve();
+	bootCompleteEvent.emit();
 }
 
 void Sys::notifyError(std::string err) {
@@ -75,6 +79,10 @@ void Sys::notifyError(std::string err) {
 
 bool Sys::shouldRunUserCode() {
 	return (runTarget==NORMAL);
+}
+
+bool Sys::isBootComplete() {
+	return bootPromise.isResolved();
 }
 
 void Sys::loop() {

@@ -17,7 +17,11 @@
 				"notifyBootComplete": {},
 				"notifyError": {"args": ["string"]},
 				"scheduleRestart": {"args": ["int"]},
-				"shouldRunUserCode": {"return": "int"}
+				"shouldRunUserCode": {"return": "int"},
+				"isBootComplete": {"return": "int"}
+			},
+			"events": {
+				"bootComplete": {"dispatcher": "bootCompleteEvent"}
 			}
 		}
 	},
