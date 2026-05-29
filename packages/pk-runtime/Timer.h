@@ -1,3 +1,4 @@
+#pragma once
 #include <peabind.h>
 #include <vector>
 #include <memory>
