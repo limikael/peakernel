@@ -4,12 +4,12 @@ todo:
 
 x kisch astar algo
 x seen device ids
-- top level promise rejections
+x top level promise rejections
+x promises 
 
-- promises (move stuff to C++ from fid pased read)
+- move stuff to C++ from fid pased read
 - wasm boxing of numbers
 - VFS rm/readdir/stat/mkdir
-
 - w/o Arduino, i.e. esp-idf... idf build
 - mquickjs
 - bytecode compile
