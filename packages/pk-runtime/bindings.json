@@ -18,10 +18,13 @@
 				"notifyError": {"args": ["string"]},
 				"scheduleRestart": {"args": ["int"]},
 				"shouldRunUserCode": {"return": "int"},
-				"isBootComplete": {"return": "int"}
+				"isBootComplete": {"return": "int"},
+				"getLatchedError": {"return": "string"},
+				"dismissError": {},
 			},
 			"events": {
-				"bootComplete": {"dispatcher": "bootCompleteEvent"}
+				"bootComplete": {"dispatcher": "bootCompleteEvent"},
+				"latchedErrorChange": {"dispatcher": "latchedErrorChangeEvent"}
 			}
 		}
 	},

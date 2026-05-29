@@ -66,6 +66,9 @@ void Sys::notifyBootComplete() {
 }
 
 void Sys::notifyError(std::string err) {
+	if (err=="")
+		err="Unknown Error";
+
 	latchedError=err;
 	if (!bootPromise.isSettled()) {
 		Serial.printf("BootErr: %s\n",err.c_str());
@@ -75,6 +78,20 @@ void Sys::notifyError(std::string err) {
 	else {
 		Serial.printf("Err: %s\n",err.c_str());
 	}
+
+	latchedErrorChangeEvent.emit();
+}
+
+void Sys::dismissError() {
+	if (latchedError=="" || !isBootComplete())
+		return;
+
+	latchedError="";
+	latchedErrorChangeEvent.emit();
+}
+
+std::string Sys::getLatchedError() {
+	return latchedError;
 }
 
 bool Sys::shouldRunUserCode() {

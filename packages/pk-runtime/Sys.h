@@ -14,7 +14,11 @@ public:
 	void scheduleRestart(bool normal);
 	bool shouldRunUserCode();
 	bool isBootComplete();
+	std::string getLatchedError();
+	void dismissError();
+
 	Dispatcher<> bootCompleteEvent;
+	Dispatcher<> latchedErrorChangeEvent;
 
 private:
     enum RunTarget {
