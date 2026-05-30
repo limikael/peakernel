@@ -9,8 +9,10 @@ test:
 		packages/pk-runtime/runtime.cpp \
 		packages/pk-runtime/encoding.cpp \
 		packages/pk-runtime/Timer.cpp \
+		packages/pk-runtime/Sys.cpp \
 		packages/pk-info/InfoRecord.cpp \
 		packages/pk-vfs/Fs.cpp \
+		-Isrc \
 		-Ipackages/pk-vfs \
 		-Ipackages/pk-info \
 		-Ipackages/pk-runtime \

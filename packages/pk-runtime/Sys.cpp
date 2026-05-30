@@ -1,7 +1,13 @@
 #include "Sys.h"
-#include <Arduino.h>
 #include "peakernel.h"
+
+#ifdef ESP32
 #include "esp_heap_caps.h"
+#endif
+
+#ifdef ARDUINO
+#include <Arduino.h>
+#endif
 
 #ifdef PEAKERNEL_INFO
 #include "InfoRecord.h"
@@ -71,12 +77,12 @@ void Sys::notifyError(std::string err) {
 
 	latchedError=err;
 	if (!bootPromise.isSettled()) {
-		Serial.printf("BootErr: %s\n",err.c_str());
+		//Serial.printf("BootErr: %s\n",err.c_str());
 		bootPromise.reject(err);
 	}
 
 	else {
-		Serial.printf("Err: %s\n",err.c_str());
+		//Serial.printf("Err: %s\n",err.c_str());
 	}
 
 	latchedErrorChangeEvent.emit();
