@@ -1,0 +1,10 @@
+{
+	"include": ["Net.h"],
+	"classes": {
+		"Net": {
+			"methods": {
+				"getInstance": {"return": "Net", "static": true}
+			}
+		}
+	}
+}

@@ -7,6 +7,7 @@ x seen device ids
 x top level promise rejections
 x promises 
 
+- networking
 - move stuff to C++ from fid pased read
 - wasm boxing of numbers
 - VFS rm/readdir/stat/mkdir
@@ -14,7 +15,6 @@ x promises
 - mquickjs
 - bytecode compile
 - commands and shell (exec)
-- networking
 - canopener completness, test with python
 
 backlog:
