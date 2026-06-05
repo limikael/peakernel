@@ -2,6 +2,7 @@
 #include "Fs.h"
 #include "pk-littlefs.h"
 #include <Arduino.h>
+#include <sys/stat.h>
 
 void littlefs_setup() {
     LittleFS.begin(true);  // or SPIFFS.begin(true)
@@ -82,5 +83,17 @@ void littlefs_setup() {
         f->closeEvent.on([file]() mutable {
             file.close();
         });
+    });
+
+    // Stat
+    Fs::getInstance()->statEvent.on([](std::shared_ptr<Stat> stat) {
+        std::string fullpath="/littlefs"+stat->getPathname();
+        struct stat st;
+        if (::stat(fullpath.c_str(),&st)==0)
+            stat->setFile();
+
+        /*const std::string p=stat->getPathname();
+        if (LittleFS.exists(p.c_str()))
+            stat->setFile();*/
     });
 }

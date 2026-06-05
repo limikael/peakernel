@@ -100,3 +100,7 @@ function readFile(pathname) {
 		});
 	});
 }
+
+function fileExists(pathname) {
+	return (!!Fs.getInstance().stat(pathname));
+}

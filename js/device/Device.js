@@ -11,6 +11,21 @@ export default class Device {
 		await this.connection.close();
 	}
 
+	async getSettings() {
+		if (!await this.connection.fileExists("/settings.json"))
+			return {};
+
+		return JSON.parse(await this.readFile("/settings.json","utf8"));
+	}
+
+	async setSetting(key, value) {
+		let settings=await this.getSettings();
+		settings[key]=value;
+
+		await this.writeFile("/settings.json",JSON.stringify(settings));
+		await this.connection.loadSettings();
+	}
+
     async readFile(fn, encoding) {
         let fid=await this.connection.fileOpen(fn, "r");
         //console.log("fid: "+fid);

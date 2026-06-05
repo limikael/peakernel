@@ -3,7 +3,19 @@
 	"classes": {
 		"Net": {
 			"methods": {
-				"getInstance": {"return": "Net", "static": true}
+				"getInstance": {"return": "Net", "static": true},
+				"setCredentials": {"args": ["string","string"]},
+				"getStatus": {"return": "int"}
+			},
+
+			"events": {
+				"statusChange": {"dispatcher": "statusChangeEvent"}
+			},
+
+			"const": {
+				"DISCONNECTED": "Net::DISCONNECTED",
+				"CONNECTING": "Net::CONNECTING",
+				"CONNECTED": "Net::CONNECTED",
 			}
 		}
 	}

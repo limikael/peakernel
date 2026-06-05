@@ -141,3 +141,28 @@ void test_event_size() {
 	assert(gotClose);
 	assert(f1->isClosed());
 }
+
+void test_fs_stat() {
+	printf("- fs can stat\n");
+
+	auto fs=Fs::createForTesting();
+
+	fs->statEvent.on([](std::shared_ptr<Stat> stat){
+		if (stat->getPathname()=="/f1") {
+			stat->setFile();
+		}
+
+		if (stat->getPathname()=="/f2") {
+			stat->setFile();
+		}
+	});
+
+	auto st=fs->stat("/f1");
+	assert(st->isFile());
+
+	st=fs->stat("/f2");
+	assert(st->isFile());
+
+	st=fs->stat("/nonexist");
+	assert(!st);
+}

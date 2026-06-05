@@ -115,6 +115,18 @@ export async function disable({chain, args}) {
         await chainDisable(chain,a);
 }
 
+export async function settings({chain, port}) {
+    let device=await createDevice({port});
+    console.log(JSON.stringify(await device.getSettings(),null,2));
+    await device.close();
+}
+
+export async function set({chain, port, args}) {
+    let device=await createDevice({port});
+    await device.setSetting(args[0],args[1]);
+    await device.close();
+}
+
 export async function configCli({chain, program}) {
     chainAttachCommanderCommand(chain,program,"init")
         .description("Create project in current dir.");
@@ -158,4 +170,12 @@ export async function configCli({chain, program}) {
         .description("Deploy program.")
         .argument('[file]', 'Main file.')
         .addOption(new Option("-m, --main <file>","Main file.").env("PEAKERNEL_MAIN"));
+
+    chainAttachCommanderCommand(chain,program,"settings")
+        .description("Show settings.");
+
+    chainAttachCommanderCommand(chain,program,"set")
+        .description("Set setting.")
+        .argument('<key>', 'Setting to set.')
+        .argument('[value]', 'Value.')
 }

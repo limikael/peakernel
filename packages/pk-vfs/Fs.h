@@ -67,16 +67,35 @@ private:
 	std::string mode;
 };
 
+class Stat {
+public:
+	enum Type {
+		NONE,
+		FILE
+	};
+
+	Stat(std::string pathname_);
+	void setFile();
+	bool isFile();
+	std::string getPathname() { return pathname; }
+
+private:
+	Type type=NONE;
+	std::string pathname;
+};
+
 class Fs {
 public:
 	std::shared_ptr<FileHandlePair> createFileHandlePair();
 	std::shared_ptr<FileHandle> open(std::string pathname, std::string mode);
+	std::shared_ptr<Stat> stat(std::string pathname);
 	void tick();
 	int getNumOpenFiles() { return pairs.size(); }
 	void close();
 	static std::shared_ptr<Fs> getInstance();
 	static std::shared_ptr<Fs> createForTesting();
 	Dispatcher<std::shared_ptr<OpenEvent>> openEvent;
+	Dispatcher<std::shared_ptr<Stat>> statEvent;
 
 private:
 	Fs() {}

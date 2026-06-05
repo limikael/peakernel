@@ -12,6 +12,6 @@ export function build(ev) {
 	ev.addLoopFunction("runtime_loop");
 	ev.addStartFunction("runtime_start");
 	ev.addStopFunction("runtime_stop");
-	ev.addBootFile(path.join(__dirname,"boot.js"));
+	ev.addBootFile(path.join(__dirname,"boot.js"),{priority: 5});
 	ev.addBootContent("boot()",{priority: 20});
 }

@@ -153,6 +153,27 @@ std::shared_ptr<FileHandle> OpenEvent::accept() {
 	return pair->getSecond();
 }
 
+Stat::Stat(std::string pathname_) {
+	pathname=pathname_;
+}
+
+bool Stat::isFile() {
+	return type==Stat::FILE;
+}
+
+void Stat::setFile() {
+	type=Stat::FILE;
+}
+
+std::shared_ptr<Stat> Fs::stat(std::string pathname) {
+	auto stat=std::make_shared<Stat>(pathname);
+	statEvent.emit(stat);
+	if (!stat->isFile())
+		return nullptr;
+
+	return stat;
+}
+
 std::shared_ptr<FileHandlePair> Fs::createFileHandlePair() {
 	std::shared_ptr<FileHandlePair> pair=std::make_shared<FileHandlePair>();
 	pairs.push_back(pair);

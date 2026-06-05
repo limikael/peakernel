@@ -10,6 +10,7 @@ public:
 	VoidPromise awaitBoot();
 	void notifyBootComplete();
 	void notifyError(std::string err);
+	void notifySettingsChange() { settingsChangeEvent.emit(); }
 	static std::shared_ptr<Sys> getInstance();
 	void scheduleRestart(bool normal);
 	bool shouldRunUserCode();
@@ -19,6 +20,7 @@ public:
 
 	Dispatcher<> bootCompleteEvent;
 	Dispatcher<> latchedErrorChangeEvent;
+	Dispatcher<> settingsChangeEvent;
 
 private:
     enum RunTarget {

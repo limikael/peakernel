@@ -16,6 +16,7 @@
 				"awaitBoot": {"return": {"type": "void", "promise": true}},
 				"notifyBootComplete": {},
 				"notifyError": {"args": ["string"]},
+				"notifySettingsChange": {},
 				"scheduleRestart": {"args": ["int"]},
 				"shouldRunUserCode": {"return": "int"},
 				"isBootComplete": {"return": "int"},
@@ -24,7 +25,8 @@
 			},
 			"events": {
 				"bootComplete": {"dispatcher": "bootCompleteEvent"},
-				"latchedErrorChange": {"dispatcher": "latchedErrorChangeEvent"}
+				"latchedErrorChange": {"dispatcher": "latchedErrorChangeEvent"},
+				"settingsChange": {"dispatcher": "settingsChangeEvent"}
 			}
 		}
 	},

@@ -37,8 +37,22 @@ if (!globalThis.console) {
 	globalThis.console.log=serialWriteString;
 }
 
+async function loadSettings() {
+	globalThis.settings={};
+
+	if (globalThis.fileExists && fileExists("/settings.json")) {
+		let settingsBuffer=await readFile("/settings.json");
+		let settingsContent=decodeAscii(settingsBuffer);
+		globalThis.settings=JSON.parse(settingsContent);
+	}
+
+	Sys.getInstance().notifySettingsChange();
+}
+
 async function boot() {
 	try {
+		await loadSettings();
+
 		if (Sys.getInstance().shouldRunUserCode()) {
 			if (globalThis.bootFunction)
 				await globalThis.bootFunction();

@@ -4,8 +4,15 @@
 		"Fs": {
 			"constructible": false,
 			"methods": {
-				"open": {"return": "FileHandle","args":["string","string"]},
+				"open": {"return": "FileHandle","args": ["string","string"]},
+				"stat": {"return": "Stat", "args": ["string"]},
 				"getInstance": {"return": "Fs", "static": true}
+			}
+		},
+		"Stat": {
+			"constructible": false,
+			"methods": {
+				"isFile": {"return": "int"}
 			}
 		},
 		"FileHandle": {

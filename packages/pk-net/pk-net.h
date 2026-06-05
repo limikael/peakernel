@@ -3,6 +3,7 @@
 
 extern "C" {
 
+void net_setup();
 void net_loop();
 
 }
