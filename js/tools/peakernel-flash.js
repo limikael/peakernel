@@ -63,7 +63,7 @@ class PeakernelFlasher {
         ev.sources=sources;
     }
 
-    generateCmake(ev) {
+    /*generateCmake(ev) {
         let topCmakeContent=unindent(`
             cmake_minimum_required(VERSION 3.16)
             include($ENV{IDF_PATH}/tools/cmake/project.cmake)
@@ -97,7 +97,7 @@ class PeakernelFlasher {
         `);
 
         fs.writeFileSync(path.join(this.targetPath,"src","CMakeLists.txt"),projectCmakeContent);
-    }
+    }*/
 
     generatePlatformioIni(ev) {
         let ini;
@@ -183,16 +183,28 @@ class PeakernelFlasher {
 
     async createBuildEvent() {
         let ev=new PeakernelBuildEvent();
+        ev.targetPath=this.targetPath;
+        ev.board=this.board;
+        ev.port=this.port;
+
         await this.chain.build(ev);
 
         ev.addIncludeDir(this.targetPath);
         ev.addIncludeDir(path.join(__dirname,"../../src"));
-        ev.addSource(this.targetPath);
-        //ev.addSource(path.join(__dirname,"../../src/peakernel.cpp"));
+        //ev.addSource(this.targetPath);
+        ev.addSource(path.join(this.targetPath,"boot_js.c"));
+        ev.addSource(path.join(this.targetPath,"peakernel_main.cpp"));
+        ev.addSource(path.join(this.targetPath,"pk_bindings.cpp"));
 
         ev.addIncludeDir(peabindGetLibConf("includeDir"));
         ev.addIncludeDir(path.join(__dirname,"../../vendor/quickjs"));
-        ev.addSource(path.join(__dirname,"../../vendor/quickjs"));
+
+        for (let source of fs.readdirSync(path.join(__dirname,"../../vendor/quickjs"))) {
+            if (source.endsWith(".c"))
+                ev.addSource(path.join(__dirname,"../../vendor/quickjs",source))
+        }
+        //ev.addSource(path.join(__dirname,"../../vendor/quickjs"));
+
         for (let source of peabindGetLibConf("sources",{target: "quickjs"}))
             ev.addSource(source);
 
@@ -269,9 +281,6 @@ export async function flash({cwd, port, dryRun, args, main, chain, board, target
     let flasher=new PeakernelFlasher({cwd, port, dryRun, args, main, chain, board, targetDir});
     let ev=await flasher.createBuildEvent();
 
-    /*if (!fs.existsSync(path.join(cwd,"platformio.ini")))
-        throw new DeclaredError("No platformio.ini");*/
-
     fs.mkdirSync(flasher.targetPath,{recursive: true});
 
     await peabind({
@@ -287,11 +296,13 @@ export async function flash({cwd, port, dryRun, args, main, chain, board, target
     let peakernelMainSource=flasher.generatePeakernelMain(ev);
     fs.writeFileSync(path.join(flasher.targetPath,"peakernel_main.cpp"),peakernelMainSource);
 
-    await flasher.generatePlatformioIni(ev);
+    await chain.postbuild(ev);
+
+    /*await flasher.generatePlatformioIni(ev);
 
     if (!dryRun) {
         await runCommand("pio",["run","--target","upload"],{cwd: flasher.targetPath});
         if (await chain.canBootFromFile())
             await chain.deploy({chain, cwd, port, args, main})
-    }
+    }*/
 }

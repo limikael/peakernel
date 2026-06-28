@@ -5,6 +5,7 @@ import {DeclaredError} from "./js-util.js";
 import path from "path";
 import {Console} from "node:console";
 import {Transform} from "node:stream";
+import fs from "node:fs";
 
 export function dirnameFromImportMeta(meta) {
     return fileURLToPath(new URL('.', meta.url));
@@ -51,6 +52,15 @@ export function packageDirname(cwd) {
         throw new DeclaredError("Not inside a project.");
 
     return path.dirname(packageFilename);
+}
+
+export function updateFile(fileName, content) {
+    let currentContent;
+    if (fs.existsSync(fileName))
+        currentContent=fs.readFileSync(fileName,"utf8");
+
+    if (content!=currentContent)
+        fs.writeFileSync(fileName,content);
 }
 
 export function table(input) {

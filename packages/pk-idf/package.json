@@ -1,0 +1,9 @@
+{
+	"name": "pk-idf",
+	"description": "Build using ESP-IDF.",
+	"keywords": ["peakernel-plugin"],
+	"type": "module",
+	"exports": {
+		"./peakernel-project-hooks": "./project.js"
+	}
+}
