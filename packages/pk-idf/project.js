@@ -51,9 +51,25 @@ async function generateIdfProject(ev) {
     let sdkconfigContent=autoIndent(`
 		CONFIG_IDF_TARGET="${ev.board}"
         CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
+        CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+        CONFIG_PARTITION_TABLE_CUSTOM=y
+        CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
     `);
 
     updateFile(path.join(ev.targetPath,"sdkconfig.defaults"),sdkconfigContent);
+
+    let partitionsContent=autoIndent(`
+        # ESP-IDF Partition Table
+        # Name, Type, SubType, Offset, Size, Flags
+        nvs,data,nvs,0x9000,20K,
+        otadata,data,ota,0xe000,8K,
+        app0,app,ota_0,0x10000,1280K,
+        app1,app,ota_1,0x150000,1280K,
+        spiffs,data,spiffs,0x290000,1408K,
+        coredump,data,coredump,0x3f0000,64K,
+    `);
+
+    updateFile(path.join(ev.targetPath,"partitions.csv"),partitionsContent);
 }
 
 export async function postbuild(ev) {
