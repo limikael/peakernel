@@ -26,15 +26,8 @@ async function generateIdfProject(ev) {
         )
 
         target_compile_definitions(\${COMPONENT_LIB} PRIVATE
-            JS_STRICT_NAN_BOXING
-            JS_NO_REGEXP
-            JS_NO_MODULE_LOADER
-            JS_NO_OS
-            CONFIG_VERSION="embedded"
-            EMSCRIPTEN
-            JSVAL_TARGET_QUICKJS
-            ${Object.keys(ev.defines).map(k=>`
-                ${k}=${ev.defines[k]}
+            ${Object.entries(ev.defines).map(([k,v])=>`
+                ${k}${v?`="${v}"`:""}
             `).join("")}
         )
 
@@ -73,12 +66,13 @@ async function generateIdfProject(ev) {
 }
 
 export async function postbuild(ev) {
-	console.log("IDF build: "+ev.targetPath);
+	//console.log("IDF build: "+ev.targetPath); //+" dryRun: "+ev.dryRun);
     ev.addSource(path.join(__dirname,"../../src/main-espidf.cpp"));
 
 	await generateIdfProject(ev);
 
-	await runCommand("idf.py",["--ccache","-p",ev.port,"flash"],{cwd: ev.targetPath});
+    if (!ev.dryRun)
+    	await runCommand("idf.py",["--ccache","-p",ev.port,"flash"],{cwd: ev.targetPath});
 }
 
 monitor.priority=5;

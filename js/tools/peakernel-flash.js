@@ -63,42 +63,6 @@ class PeakernelFlasher {
         ev.sources=sources;
     }
 
-    /*generateCmake(ev) {
-        let topCmakeContent=unindent(`
-            cmake_minimum_required(VERSION 3.16)
-            include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-            project(peakernel)            
-        `);
-        fs.writeFileSync(path.join(this.targetPath,"CMakeLists.txt"),topCmakeContent);
-
-        fs.mkdirSync(path.join(this.targetPath,"src"),{recursive: true});
-        let sources=[];
-        for (let source of ev.sources) {
-            let stats=fs.statSync(source);
-
-            if (stats.isFile()) {
-                sources.push(source);
-            }
-
-            else {
-                for (let entry of fs.readdirSync(source))
-                    if (entry.endsWith(".c") || entry.endsWith(".cpp"))
-                        sources.push(path.join(source,entry));
-            }
-        }
-
-        let projectCmakeContent=autoIndent(`
-            idf_component_register(
-                SRCS
-                    ${sources.map(d=>`"${d}"\n`).join("\n")}
-                INCLUDE_DIRS
-                    ${ev.includeDirs.map(d=>`"${d}"\n`).join("\n")}
-            )
-        `);
-
-        fs.writeFileSync(path.join(this.targetPath,"src","CMakeLists.txt"),projectCmakeContent);
-    }*/
-
     generatePlatformioIni(ev) {
         let ini;
         if (this.cwd && fs.existsSync(path.join(this.cwd,"platformio.ini")))
@@ -186,6 +150,7 @@ class PeakernelFlasher {
         ev.targetPath=this.targetPath;
         ev.board=this.board;
         ev.port=this.port;
+        ev.dryRun=this.dryRun;
 
         await this.chain.build(ev);
 
@@ -298,11 +263,11 @@ export async function flash({cwd, port, dryRun, args, main, chain, board, target
 
     await chain.postbuild(ev);
 
-    /*await flasher.generatePlatformioIni(ev);
-
     if (!dryRun) {
-        await runCommand("pio",["run","--target","upload"],{cwd: flasher.targetPath});
+        //await flasher.generatePlatformioIni(ev);
+
+        //await runCommand("pio",["run","--target","upload"],{cwd: flasher.targetPath});
         if (await chain.canBootFromFile())
             await chain.deploy({chain, cwd, port, args, main})
-    }*/
+    }
 }
