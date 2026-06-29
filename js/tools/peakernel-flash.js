@@ -7,7 +7,6 @@ import {peabind, peabindMerge, peabindGetLibConf} from "peabind";
 import {escapeCString, unindent, autoIndent} from "../utils/lang-util.js";
 import JSON5 from "json5";
 import PeakernelBuildEvent from "./PeakernelBuildEvent.js";
-import {pioParse, pioStringify, pioGetEnvNames, pioGetEnv, pioEnvNormalize} from "../utils/pio-util.js";
 import {Command, Option, program} from "commander";
 import {chainAttachCommanderCommand} from "chain-import";
 import {resolveDeployFile, PeakernelBundler} from "./peakernel-deploy.js";
@@ -37,159 +36,25 @@ class PeakernelFlasher {
             this.targetPath=path.join(os.tmpdir(),"peakernel-tmp",".target");
     }
 
-    generateSrcExt(ev) {
-        fs.mkdirSync(path.join(this.targetPath,"src-ext"),{recursive: true});
-
-        let sources=[];
-        for (let source of ev.sources) {
-            let stats=fs.statSync(source);
-
-            if (stats.isFile()) {
-                let name=path.basename(source);
-                let linkToName=path.join(this.targetPath,"src-ext",name);
-                if (!fs.existsSync(linkToName))
-                    fs.symlinkSync(source,linkToName);
-
-                sources.push(linkToName);
-            }
-
-            else {
-                sources.push(source);
-            }
-        }
-
-        sources.push(path.join(this.targetPath,"src-ext"));
-
-        ev.sources=sources;
-    }
-
-    generatePlatformioIni(ev) {
-        let ini;
-        if (this.cwd && fs.existsSync(path.join(this.cwd,"platformio.ini")))
-            ini=pioParse(fs.readFileSync(path.join(this.cwd,"platformio.ini"),"utf8"));
-
-        else
-            ini={"env:default": {}};
-
-        if (pioGetEnvNames(ini).length!=1)
-            throw new Error("Expectd exactly one env in platformio.ini");
-
-        let env=pioEnvNormalize(pioGetEnv(ini,pioGetEnvNames(ini)[0]));
-        if (!env.platform)
-            env.platform="espressif32";
-
-        if (!env.framework)
-            env.framework="arduino";
-
-        if (this.board)
-            env.board=this.board;
-
-        if (ev.board)
-            env.board=ev.board;
-
-        if (!env.board)
-            throw new DeclaredError("No board selected (pass on the cmd line, or set in .env");
-
-        env.upload_port=this.port;
-        env.monitor_port=this.port;
-        env.monitor_speed=115200;
-        env.build_unflags.push("-std=gnu++11");
-        env.build_flags.push(...[
-            "-std=c++17",
-            "-DJS_STRICT_NAN_BOXING",
-            "-DJS_NO_REGEXP",
-            "-DJS_NO_MODULE_LOADER",
-            "-DJS_NO_OS",
-            `-DCONFIG_VERSION=\\"embedded\\"`,
-            "-DEMSCRIPTEN",
-            "-DJSVAL_TARGET_QUICKJS",
-            ...ev.includeDirs.map(d=>`-I${d}`),
-            ...Object.entries(ev.defines).map(([k,v])=>`-D${k}${v?"="+v:""}`),
-        ]);
-
-        if (!env.lib_deps)
-            env.lib_deps=[];
-
-        env.lib_deps.push(...ev.libDeps);
-
-        if (env.build_src_filter)
-            throw new DeclaredError("Don't specify build_src_filter");
-
-        switch (env.framework) {
-            case "arduino":
-                ev.addSource(path.join(__dirname,"../../src/main-arduino.cpp"));
-                this.generateSrcExt(ev);
-                env.build_src_filter=[
-                    "-<*>",
-                    ...ev.sources.map(s=>`+<${s}>`)
-                ];
-                env.build_flags.push(...[
-                    "-DARDUINO_USB_MODE=1",
-                    "-DARDUINO_USB_CDC_ON_BOOT=1"
-                ]);
-                break;
-
-            case "espidf":
-                ev.addSource(path.join(__dirname,"../../src/main-espidf.cpp"));
-                this.generateCmake(ev);
-                env.build_unflags.push("-Werror=all");
-                env.build_flags.push("-Wno-error=incompatible-pointer-types");
-                env.build_flags.push("-fpermissive");
-                break;
-
-            default:
-                throw new DeclaredError("Unknown framework: "+env.framework);
-        }
-
-        let iniContent=pioStringify(ini);
-        fs.writeFileSync(path.join(this.targetPath,"platformio.ini"),iniContent);
-    }
-
     async createBuildEvent() {
         let ev=new PeakernelBuildEvent();
         ev.targetPath=this.targetPath;
         ev.board=this.board;
         ev.port=this.port;
         ev.dryRun=this.dryRun;
+        ev.cwd=this.cwd;
 
         await this.chain.build(ev);
 
         ev.addIncludeDir(this.targetPath);
         ev.addIncludeDir(path.join(__dirname,"../../src"));
-        //ev.addSource(this.targetPath);
+        ev.addIncludeDir(peabindGetLibConf("includeDir"));
+
         ev.addSource(path.join(this.targetPath,"boot_js.c"));
         ev.addSource(path.join(this.targetPath,"peakernel_main.cpp"));
         ev.addSource(path.join(this.targetPath,"pk_bindings.cpp"));
 
-        ev.addIncludeDir(peabindGetLibConf("includeDir"));
-        ev.addIncludeDir(path.join(__dirname,"../../vendor/quickjs"));
-
-        for (let source of fs.readdirSync(path.join(__dirname,"../../vendor/quickjs"))) {
-            if (source.endsWith(".c"))
-                ev.addSource(path.join(__dirname,"../../vendor/quickjs",source))
-        }
-        //ev.addSource(path.join(__dirname,"../../vendor/quickjs"));
-
-        for (let source of peabindGetLibConf("sources",{target: "quickjs"}))
-            ev.addSource(source);
-
         return ev;
-    }
-
-    loadJsonIfFilename(filenameOrObject) {
-        if (typeof filenameOrObject=="string")
-            filenameOrObject=JSON5.parse(fs.readFileSync(filenameOrObject));
-
-        return filenameOrObject;
-    }
-
-    makeRelativeIfFile(fileOrDir) {
-        return fileOrDir;
-
-        if (fs.statSync(fileOrDir).isDirectory())
-            return fileOrDir;
-
-        return path.relative(this.targetPath,fileOrDir);
     }
 
     generatePeakernelMain(ev) {
@@ -242,6 +107,13 @@ class PeakernelFlasher {
     }
 }
 
+function loadJsonIfFilename(filenameOrObject) {
+    if (typeof filenameOrObject=="string")
+        filenameOrObject=JSON5.parse(fs.readFileSync(filenameOrObject));
+
+    return filenameOrObject;
+}
+
 export async function flash({cwd, port, dryRun, args, main, chain, board, targetDir}) {
     let flasher=new PeakernelFlasher({cwd, port, dryRun, args, main, chain, board, targetDir});
     let ev=await flasher.createBuildEvent();
@@ -249,7 +121,7 @@ export async function flash({cwd, port, dryRun, args, main, chain, board, target
     fs.mkdirSync(flasher.targetPath,{recursive: true});
 
     await peabind({
-        idl: peabindMerge(ev.bindings.map(b=>flasher.loadJsonIfFilename(b))),
+        idl: peabindMerge(ev.bindings.map(b=>loadJsonIfFilename(b))),
         target: "quickjs",
         output: path.join(flasher.targetPath,"pk_bindings.cpp"),
         prefix: "pk_bindings_"
@@ -264,9 +136,6 @@ export async function flash({cwd, port, dryRun, args, main, chain, board, target
     await chain.postbuild(ev);
 
     if (!dryRun) {
-        //await flasher.generatePlatformioIni(ev);
-
-        //await runCommand("pio",["run","--target","upload"],{cwd: flasher.targetPath});
         if (await chain.canBootFromFile())
             await chain.deploy({chain, cwd, port, args, main})
     }

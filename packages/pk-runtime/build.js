@@ -11,7 +11,7 @@ export function build(ev) {
 	ev.addSource(path.join(__dirname,"runtime.cpp"));
 	ev.addSource(path.join(__dirname,"Timer.cpp"));
 	ev.addSource(path.join(__dirname,"Sys.cpp"));
-	ev.addSource(path.join(__dirname));
+	//ev.addSource(path.join(__dirname));
 	ev.addIncludeDir(path.join(__dirname));
 	ev.addSetupFunction("runtime_setup");
 	ev.addLoopFunction("runtime_loop");

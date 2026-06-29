@@ -1,5 +1,7 @@
 import {dirnameFromImportMeta} from "../../js/utils/node-util.js";
 import path from "path";
+import fs from "node:fs";
+import {peabind, peabindMerge, peabindGetLibConf} from "peabind";
 
 let __dirname=dirnameFromImportMeta(import.meta);
 
@@ -18,7 +20,17 @@ export function build(ev) {
     ev.addDefine("JS_NO_REGEXP");
     ev.addDefine("JS_NO_MODULE_LOADER");
     ev.addDefine("JS_NO_OS");
-    ev.addDefine("CONFIG_VERSION","embedded");
+    ev.addDefine("CONFIG_VERSION","\\\"embedded\\\"");
     ev.addDefine("EMSCRIPTEN");
     ev.addDefine("JSVAL_TARGET_QUICKJS");
+
+    for (let source of fs.readdirSync(path.join(__dirname,"../../vendor/quickjs"))) {
+        if (source.endsWith(".c"))
+            ev.addSource(path.join(__dirname,"../../vendor/quickjs",source))
+    }
+
+    for (let source of peabindGetLibConf("sources",{target: "quickjs"}))
+        ev.addSource(source);
+
+    ev.addIncludeDir(path.join(__dirname,"../../vendor/quickjs"));
 }

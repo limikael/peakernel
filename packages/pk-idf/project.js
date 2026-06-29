@@ -27,7 +27,7 @@ async function generateIdfProject(ev) {
 
         target_compile_definitions(\${COMPONENT_LIB} PRIVATE
             ${Object.entries(ev.defines).map(([k,v])=>`
-                ${k}${v?`="${v}"`:""}
+                ${k}${v?`=${v}`:""}
             `).join("")}
         )
 

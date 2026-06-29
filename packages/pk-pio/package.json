@@ -1,9 +1,8 @@
 {
-	"name": "pk-idf",
-	"description": "Build using ESP-IDF.",
+	"name": "pk-pio",
+	"description": "Build using platform.io.",
 	"keywords": ["peakernel-plugin"],
 	"type": "module",
-	"defaultEnable": false,
 	"exports": {
 		"./peakernel-project-hooks": "./project.js"
 	}

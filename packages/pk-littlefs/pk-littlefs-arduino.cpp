@@ -1,7 +1,7 @@
+#include <Arduino.h>
 #include <LittleFS.h>
 #include "Fs.h"
 #include "pk-littlefs.h"
-#include <Arduino.h>
 
 void littlefs_setup() {
     LittleFS.begin(true);  // or SPIFFS.begin(true)
