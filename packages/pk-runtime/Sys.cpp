@@ -1,8 +1,10 @@
 #include "Sys.h"
 #include "peakernel.h"
 
-#ifdef ESP32
+#if defined(ESP32) || defined(ESP_PLATFORM)
 #include "esp_heap_caps.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 #endif
 
 #ifdef ARDUINO
@@ -26,6 +28,7 @@ void Sys::setup() {
 #ifdef PEAKERNEL_INFO
 	InfoCollector::getInstance()->collectEvent.on([this](std::shared_ptr<InfoRecord> record) {
 		UBaseType_t hw = uxTaskGetStackHighWaterMark(NULL);
+		//int hw = uxTaskGetStackHighWaterMark(NULL);
 		multi_heap_info_t info;
 		heap_caps_get_info(&info, MALLOC_CAP_DEFAULT);
 		record->setInt("totalHeap",info.total_free_bytes+info.total_allocated_bytes);

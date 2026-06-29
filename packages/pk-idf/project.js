@@ -33,6 +33,9 @@ async function generateIdfProject(ev) {
             CONFIG_VERSION="embedded"
             EMSCRIPTEN
             JSVAL_TARGET_QUICKJS
+            ${Object.keys(ev.defines).map(k=>`
+                ${k}=${ev.defines[k]}
+            `).join("")}
         )
 
         target_compile_options(\${COMPONENT_LIB} PRIVATE
@@ -47,6 +50,7 @@ async function generateIdfProject(ev) {
 
     let sdkconfigContent=autoIndent(`
 		CONFIG_IDF_TARGET="${ev.board}"
+        CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
     `);
 
     updateFile(path.join(ev.targetPath,"sdkconfig.defaults"),sdkconfigContent);
