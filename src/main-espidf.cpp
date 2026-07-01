@@ -7,7 +7,7 @@
 
 extern "C" {
 
-void peakernel_task(void *arg) {
+void app_main(void) {
     peakernel_notify_setup();
     peakernel_notify_start();
 
@@ -16,17 +16,6 @@ void peakernel_task(void *arg) {
         //taskYIELD();
         peakernel_notify_loop();
     }
-}
-
-void app_main(void) {
-    xTaskCreate(
-        peakernel_task,
-        "peakernel",
-        8192,
-        NULL,
-        5,
-        NULL
-    );
 }
 
 }

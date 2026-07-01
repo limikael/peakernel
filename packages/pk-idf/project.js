@@ -41,12 +41,16 @@ async function generateIdfProject(ev) {
     fs.mkdirSync(path.join(ev.targetPath,"main"),{recursive: true});
     updateFile(path.join(ev.targetPath,"main","CMakeLists.txt"),mainCmakeContent);
 
+    //console.log("ev.board="+ev.board);
+
     let sdkconfigContent=autoIndent(`
 		CONFIG_IDF_TARGET="${ev.board}"
         CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
         CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
         CONFIG_PARTITION_TABLE_CUSTOM=y
         CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+        CONFIG_FREERTOS_HZ=1000
+        CONFIG_ESP_MAIN_TASK_STACK_SIZE=16384
     `);
 
     updateFile(path.join(ev.targetPath,"sdkconfig.defaults"),sdkconfigContent);

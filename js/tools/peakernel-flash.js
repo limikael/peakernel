@@ -115,8 +115,12 @@ function loadJsonIfFilename(filenameOrObject) {
 }
 
 export async function flash({cwd, port, dryRun, args, main, chain, board, targetDir}) {
+    //console.log("board="+board);
+
     let flasher=new PeakernelFlasher({cwd, port, dryRun, args, main, chain, board, targetDir});
     let ev=await flasher.createBuildEvent();
+
+    //console.log("ev.board="+ev.board);
 
     fs.mkdirSync(flasher.targetPath,{recursive: true});
 
