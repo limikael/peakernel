@@ -29,7 +29,8 @@ export class SerialDeviceConnection extends EventEmitter {
 			try {
 				msg = JSON.parse(line);
 			} catch (e) {
-				console.log(line);
+				if (line.trim())
+					console.log(line);
 				return;
 			}
 

@@ -21,22 +21,6 @@ export async function cat({cwd, port, args}) {
     await device.close();
 }
 
-export async function monitor({cwd, port, targetDir}) {
-    cwd=packageDirname(cwd);
-    let targetPath;
-
-    if (targetDir)
-        targetPath=targetDir;
-
-    else if (cwd)
-        targetPath=path.join(cwd,".target");
-
-    else
-        targetPath=path.join(os.tmpdir(),"peakernel-tmp",".target");
-
-    await runCommand("pio",["device","monitor"],{cwd: targetPath});
-}
-
 export async function init() {
     console.log("Init peakernel project...");
 

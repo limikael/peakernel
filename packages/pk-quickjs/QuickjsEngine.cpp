@@ -2,6 +2,7 @@
 #include "pk_bindings.h"
 #include "jsval-util.h"
 #include "Sys.h"
+#include <cassert>
 
 #ifdef PEAC_INFO
 #include "InfoRecord.h"

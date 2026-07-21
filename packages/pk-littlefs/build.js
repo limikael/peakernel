@@ -7,8 +7,9 @@ import path from "node:path";
 let __dirname = dirnameFromImportMeta(import.meta);
 
 export function build(ev) {
-    ev.addSource(path.join(__dirname, "."));
-    ev.addIncludeDir(path.join(__dirname, "."));
+    ev.addSource(path.join(__dirname,"pk-littlefs.cpp"));
+    //ev.addSource(__dirname);
+    ev.addIncludeDir(__dirname);
     ev.addSetupFunction("littlefs_setup");
     ev.setExternalBootFile(true);
 }

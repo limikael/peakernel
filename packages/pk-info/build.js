@@ -6,7 +6,7 @@ import path from "path";
 let __dirname = dirnameFromImportMeta(import.meta);
 
 export function build(ev) {
-    ev.addSource(__dirname, ".");
+    ev.addSource(path.join(__dirname,"InfoRecord.cpp"));
     ev.addIncludeDir(__dirname);
     ev.addDefine("PEAC_INFO");
     ev.addDefine("PEAKERNEL_INFO");

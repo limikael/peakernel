@@ -5,7 +5,7 @@ let __dirname=dirnameFromImportMeta(import.meta);
 
 export function build(ev) {
 	//ev.addBinding(path.join(__dirname,"bindings.json"));
-	ev.addSource(path.join(__dirname,"."));
+	ev.addSource(path.join(__dirname,"serial-console.cpp"));
 	ev.addIncludeDir(path.join(__dirname,"."));
 	ev.addSetupFunction("serial_console_setup");
 	ev.addLoopFunction("serial_console_loop");
