@@ -4,7 +4,8 @@ import path from "path";
 let __dirname=dirnameFromImportMeta(import.meta);
 
 export function build(ev) {
-	ev.addSource(__dirname);
+	ev.addSource(path.join(__dirname,"pk-net.cpp"));
+	ev.addSource(path.join(__dirname,"Net.cpp"));
 	ev.addIncludeDir(__dirname);
 	ev.addLoopFunction("net_loop");
 	ev.addSetupFunction("net_setup");

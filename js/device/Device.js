@@ -19,7 +19,10 @@ export default class Device {
 	}
 
 	async setSetting(key, value) {
+		//console.log("setting",key,value);
+
 		let settings=await this.getSettings();
+		//console.log("current",settings);
 		settings[key]=value;
 
 		await this.writeFile("/settings.json",JSON.stringify(settings));

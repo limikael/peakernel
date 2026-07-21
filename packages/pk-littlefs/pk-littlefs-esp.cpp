@@ -103,4 +103,16 @@ void littlefs_setup() {
         	close(fid);
         });
     });
+
+    // Stat
+    Fs::getInstance()->statEvent.on([](std::shared_ptr<Stat> stat) {
+        std::string fullpath="/storage"+stat->getPathname();
+        struct stat st;
+        int statres=::stat(fullpath.c_str(),&st);
+
+        //printf("statting... %s res=%d\n",fullpath.c_str(),statres);
+
+        if (statres==0)
+            stat->setFile();
+    });
 }

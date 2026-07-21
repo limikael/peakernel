@@ -55,7 +55,7 @@ async function generateIdfProject(ev) {
 
     updateFile(path.join(ev.targetPath,"sdkconfig.defaults"),sdkconfigContent);
 
-    let partitionsContent=autoIndent(`
+    /*let partitionsContent=autoIndent(`
         # ESP-IDF Partition Table
         # Name, Type, SubType, Offset, Size, Flags
         nvs,data,nvs,0x9000,20K,
@@ -64,6 +64,16 @@ async function generateIdfProject(ev) {
         app1,app,ota_1,0x150000,1280K,
         spiffs,data,spiffs,0x290000,1408K,
         coredump,data,coredump,0x3f0000,64K,
+    `);*/
+
+    let partitionsContent=autoIndent(`
+        # Name,     Type, SubType, Offset,   Size,    Flags
+        nvs,        data, nvs,     0x9000,    20K,
+        otadata,    data, ota,     0xe000,    8K,
+        app0,       app,  ota_0,   0x10000,   1664K,
+        app1,       app,  ota_1,   0x1b0000,  1664K,
+        spiffs,     data, spiffs,  0x350000,  640K,
+        coredump,   data, coredump,0x3f0000,  64K,
     `);
 
     updateFile(path.join(ev.targetPath,"partitions.csv"),partitionsContent);

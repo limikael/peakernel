@@ -2,6 +2,11 @@
 #include <memory>
 #include "async_primitives.hpp"
 
+#include "esp_wifi.h"
+#include "esp_event.h"
+#include "esp_netif.h"
+#include "esp_err.h"
+
 class Net {
 public:
 	enum Status {
@@ -17,8 +22,10 @@ public:
 	Dispatcher<> statusChangeEvent;
 
 private:
-	void updateStatus();
-	Status getHardwareStatus();
+    static void wifiEventHandler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
+    void updateStatus(Status newStatus);
+	//Status getHardwareStatus();
 	std::string ssid,password;
 	Status status;
+	std::string ip;
 };
