@@ -100,9 +100,9 @@ void Net::setCredentials(std::string ssid_, std::string password_) {
     ESP_ERROR_CHECK(
         esp_wifi_set_config(WIFI_IF_STA, &config));
 
-    updateStatus(CONNECTING);
-
     esp_wifi_connect();
+
+    updateStatus(CONNECTING);
 }
 
 void Net::updateStatus(Status newStatus) {

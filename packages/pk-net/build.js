@@ -6,6 +6,7 @@ let __dirname=dirnameFromImportMeta(import.meta);
 export function build(ev) {
 	ev.addSource(path.join(__dirname,"pk-net.cpp"));
 	ev.addSource(path.join(__dirname,"Net.cpp"));
+	ev.addSource(path.join(__dirname,"fetch.cpp"));
 	ev.addIncludeDir(__dirname);
 	ev.addLoopFunction("net_loop");
 	ev.addSetupFunction("net_setup");

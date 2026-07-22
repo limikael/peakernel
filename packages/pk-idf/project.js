@@ -51,6 +51,8 @@ async function generateIdfProject(ev) {
         CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
         CONFIG_FREERTOS_HZ=1000
         CONFIG_ESP_MAIN_TASK_STACK_SIZE=16384
+        CONFIG_MBEDTLS_CERTIFICATE_BUNDLE=y
+        CONFIG_MBEDTLS_DEFAULT_CERTIFICATE_BUNDLE=y
     `);
 
     updateFile(path.join(ev.targetPath,"sdkconfig.defaults"),sdkconfigContent);
